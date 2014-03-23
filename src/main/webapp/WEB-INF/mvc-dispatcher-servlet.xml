@@ -14,7 +14,9 @@
     <context:annotation-config/>
 
     <mvc:annotation-driven/>
+
     <mvc:resources mapping="/resources/**" location="/resources/"/>
+
     <context:component-scan base-package="pl.edu.agh.student.hyperhypervisors.controllers"/>
 
     <bean id="viewResolver"
