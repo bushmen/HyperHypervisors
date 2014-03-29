@@ -1,9 +1,9 @@
-package pl.edu.agh.student.hyperhypervisors.session;
+package pl.edu.agh.student.hyperhypervisors.web.session;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.edu.agh.student.hyperhypervisors.neo4j.domain.User;
-import pl.edu.agh.student.hyperhypervisors.neo4j.domain.UserRole;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.User;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.UserRole;
 
 import java.util.Collection;
 import java.util.Collections;

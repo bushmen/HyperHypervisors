@@ -17,7 +17,7 @@
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
-    <context:component-scan base-package="pl.edu.agh.student.hyperhypervisors.controllers"/>
+    <context:component-scan base-package="pl.edu.agh.student.hyperhypervisors.web.controllers"/>
 
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver"

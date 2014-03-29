@@ -1,4 +1,4 @@
-package pl.edu.agh.student.hyperhypervisors.neo4j.domain;
+package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;

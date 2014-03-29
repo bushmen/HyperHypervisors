@@ -24,10 +24,10 @@
 
     <context:property-placeholder location="/WEB-INF/config.properties"/>
 
-    <neo4j:config base-package="pl.edu.agh.student.hyperhypervisors.neo4j.domain"
+    <neo4j:config base-package="pl.edu.agh.student.hyperhypervisors.web.neo4j.domain"
                   graphDatabaseService="graphDatabaseService"/>
 
-    <neo4j:repositories base-package="pl.edu.agh.student.hyperhypervisors.neo4j.repositories"/>
+    <neo4j:repositories base-package="pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories"/>
 
     <bean id="graphDatabaseService" class="org.springframework.data.neo4j.rest.SpringRestGraphDatabase">
         <constructor-arg value="${neo4j.url}"/>
