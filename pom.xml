@@ -30,31 +30,26 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
@@ -67,7 +62,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.1</version>
                     <configuration>
@@ -76,7 +70,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.17</version>
                     <configuration>
@@ -87,7 +80,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.3</version>
                     <dependencies>
@@ -101,13 +93,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <distributionManagement>
-        <site>
-            <id>student</id>
-            <url>scp://buszko@student.agh.edu.pl:/home/ietgrp/buszko/public_html/HyperHypervisors</url>
-        </site>
-    </distributionManagement>
 
     <repositories>
         <repository>
@@ -170,6 +155,13 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <distributionManagement>
+        <site>
+            <id>student</id>
+            <url>${student.scp.path}/HyperHypervisors</url>
+        </site>
+    </distributionManagement>
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/bushmen/HyperHypervisors/issues</url>
@@ -184,7 +176,6 @@
     <reporting>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
@@ -192,19 +183,40 @@
                 </configuration>
                 <reportSets>
                     <reportSet>
+                        <inherited>true</inherited>
                         <reports>
                             <report>index</report>
+                            <report>plugins</report>
+                            <report>dependencies</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <inherited>false</inherited>
+                        <reports>
                             <report>modules</report>
                             <report>plugin-management</report>
-                            <report>plugins</report>
                             <report>dependency-management</report>
-                            <report>dependencies</report>
                             <report>scm</report>
                             <report>issue-tracking</report>
                             <report>project-team</report>
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.17</version>
             </plugin>
         </plugins>
     </reporting>
