@@ -18,7 +18,7 @@ public class UserSessionDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<UserRole> roles = user.getRoles();
+        Collection<? extends UserRole> roles = user.getRoles();
         if (roles == null) {
             return Collections.emptyList();
         }
@@ -27,12 +27,12 @@ public class UserSessionDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return user.getLogin();
     }
 
     @Override

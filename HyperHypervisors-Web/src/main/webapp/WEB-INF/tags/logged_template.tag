@@ -2,6 +2,7 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="body" fragment="true" %>
 
 <t:template>
@@ -13,6 +14,9 @@
         <div class="row">
             <div class="col-sm-3">
                 <div class="list-group">
+                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                        <a class="list-group-item" href="<c:url value="/admin/users/create" />">Create user</a>
+                    </sec:authorize>
                     <a class="list-group-item" href="<c:url value="/j_spring_security_logout" />">Logout</a>
                 </div>
             </div>

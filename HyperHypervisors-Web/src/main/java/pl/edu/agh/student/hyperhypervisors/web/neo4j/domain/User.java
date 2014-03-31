@@ -1,9 +1,12 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 
 @NodeEntity
@@ -12,14 +15,18 @@ public class User {
     @GraphId
     private Long id;
 
-    @Indexed
+    @Indexed(unique = true)
+    @NotNull(message = "{login.notempty}")
+    @NotEmpty(message = "{login.notempty}")
     private String login;
 
+    @NotNull(message = "{password.notempty}")
+    @NotEmpty(message = "{password.notempty}")
     private String password;
 
-    private String token;
-
-    private Collection<UserRole> roles;
+    @NotNull(message = "{role.required}")
+    @Size(min = 1, message = "{role.required}")
+    private Collection<? extends UserRole> roles;
 
     public Long getId() {
         return id;
@@ -45,19 +52,11 @@ public class User {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Collection<UserRole> getRoles() {
+    public Collection<? extends UserRole> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<UserRole> roles) {
+    public void setRoles(Collection<? extends UserRole> roles) {
         this.roles = roles;
     }
 

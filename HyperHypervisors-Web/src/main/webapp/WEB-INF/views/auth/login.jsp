@@ -17,8 +17,11 @@
             <c:if test="${not empty param.login_error}">
                 <div class="alert alert-danger">
                     <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
-                    <p>Your login attempt was not successful, try again.</p>
-                    <p>${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</p>
+                    <p>
+                        Your login attempt was not successful due to error:
+                        ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}.
+                    </p>
+                    <p>Please, try again.</p>
                 </div>
             </c:if>
 
@@ -26,15 +29,15 @@
                 <fieldset>
                     <legend>Log in</legend>
                     <div class="form-group">
-                        <label for="username" class="col-sm-5 control-label">User name:</label>
+                        <label for="login" class="col-sm-5 control-label">Login</label>
 
                         <div class="col-sm-7">
-                            <input type="text" id="username" name="j_username" class="form-control"
+                            <input id="login" name="j_username" class="form-control"
                                    placeholder="User name"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="col-sm-5 control-label">Password:</label>
+                        <label for="password" class="col-sm-5 control-label">Password</label>
 
                         <div class="col-sm-7">
                             <input type="password" id="password" name="j_password" class="form-control"
@@ -43,7 +46,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-5 col-sm-7">
-                            <input name="submit" type="submit" value="Login" class="btn btn-primary"/>
+                            <input type="submit" value="Log in" class="btn btn-primary"/>
                         </div>
                     </div>
                 </fieldset>
