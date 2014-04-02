@@ -15,4 +15,10 @@ public class AuthController {
     public String login() {
         return "auth/login";
     }
+
+    @RequestMapping("/login-error")
+    public String loginError(Model model) {
+        model.addAttribute("loginError", true);
+        return "auth/login";
+    }
 }
