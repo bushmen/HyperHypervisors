@@ -79,7 +79,6 @@ public class User {
 
     @Override
     public int hashCode() {
-
         return id != null ? id.hashCode() : super.hashCode();
     }
 }

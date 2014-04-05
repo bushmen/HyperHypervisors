@@ -77,6 +77,7 @@
                             <include>**/*Tests.java</include>
                             <include>**/*Test.java</include>
                         </includes>
+                        <argLine>-XX:-UseSplitVerifier</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -163,7 +164,7 @@
     <distributionManagement>
         <site>
             <id>student</id>
-            <url>${student.scp.path}/HyperHypervisors</url>
+            <url>scp://fbuszko@student.agh.edu.pl:/home/ietgrp/fbuszko/public_html/HyperHypervisors</url>
         </site>
     </distributionManagement>
 
@@ -218,6 +219,7 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
+                    <check/>
                 </configuration>
             </plugin>
             <plugin>
@@ -234,8 +236,10 @@
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.17</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
             </plugin>
-
         </plugins>
     </reporting>
 
