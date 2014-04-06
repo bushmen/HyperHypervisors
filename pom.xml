@@ -164,7 +164,7 @@
     <distributionManagement>
         <site>
             <id>student</id>
-            <url>scp://fbuszko@student.agh.edu.pl:/home/ietgrp/fbuszko/public_html/HyperHypervisors</url>
+            <url>scp://buszko@student.agh.edu.pl:/home/ietgrp/buszko/public_html/HyperHypervisors</url>
         </site>
     </distributionManagement>
 
