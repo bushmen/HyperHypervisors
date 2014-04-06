@@ -146,6 +146,11 @@
             <url>http://repository.jboss.org/</url>
             <name>JBoss public available repo</name>
         </repository>
+        <repository>
+            <id>thirdparty-uploads</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+            <name>JBoss Thirdparty Uploads</name>
+        </repository>
     </repositories>
 
     <pluginRepositories>
