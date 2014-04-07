@@ -16,16 +16,16 @@ public class User {
     private Long id;
 
     @Indexed(unique = true)
-    @NotNull(message = "{login.notempty}")
-    @NotEmpty(message = "{login.notempty}")
+    @NotNull(message = "{field.nonempty}")
+    @NotEmpty(message = "{field.nonempty}")
     private String login;
 
-    @NotNull(message = "{password.notempty}")
-    @NotEmpty(message = "{password.notempty}")
+    @NotNull(message = "{field.nonempty}")
+    @NotEmpty(message = "{field.nonempty}")
     private String password;
 
-    @NotNull(message = "{role.required}")
-    @Size(min = 1, message = "{role.required}")
+    @NotNull(message = "{value.required}")
+    @Size(min = 1, message = "{value.required}")
     private Collection<? extends UserRole> roles;
 
     public Long getId() {
