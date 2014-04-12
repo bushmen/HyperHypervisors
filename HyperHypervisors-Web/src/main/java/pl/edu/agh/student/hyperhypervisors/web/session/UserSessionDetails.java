@@ -19,10 +19,7 @@ public class UserSessionDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<? extends UserRole> roles = user.getRoles();
-        if (roles == null) {
-            return Collections.emptyList();
-        }
-        return roles;
+        return roles == null ? Collections.<GrantedAuthority>emptyList() : roles;
     }
 
     @Override

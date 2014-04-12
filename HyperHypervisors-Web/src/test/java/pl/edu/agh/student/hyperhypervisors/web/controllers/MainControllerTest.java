@@ -6,7 +6,7 @@ import org.junit.Test;
 public class MainControllerTest {
     @Test
     public void testIndex() throws Exception {
-        MainController ctr = new MainController();
-        Assert.assertEquals("index", ctr.index());
+        MainController testInstance = new MainController();
+        Assert.assertEquals("index", testInstance.index());
     }
 }
