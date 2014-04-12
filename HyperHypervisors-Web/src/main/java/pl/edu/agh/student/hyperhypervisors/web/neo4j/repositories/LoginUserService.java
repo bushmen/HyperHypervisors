@@ -12,7 +12,7 @@ import pl.edu.agh.student.hyperhypervisors.web.session.UserSessionDetails;
 public class LoginUserService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Override
     public UserSessionDetails loadUserByUsername(String login)
