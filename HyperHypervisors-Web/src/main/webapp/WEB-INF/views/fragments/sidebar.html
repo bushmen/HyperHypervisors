@@ -5,8 +5,8 @@
 <body>
 <div th:fragment="sidebar" class="col-sm-3">
     <div class="list-group">
-        <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item" th:href="@{/admin/users/create}">Create
-            user</a>
+        <a class="list-group-item" th:href="@{/infrastructure}">Infrastructure</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item" th:href="@{/admin/users/create}">Create user</a>
         <a class="list-group-item" th:href="@{/changePassword}">Change password</a>
         <a class="list-group-item" th:href="@{/j_spring_security_logout}">Logout</a>
     </div>
