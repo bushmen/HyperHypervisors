@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +28,7 @@ public class AdminController {
     @RequestMapping(value = "/users/create", method = RequestMethod.GET)
     public String create(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("userRoles", UserRole.values());
-        return "/admin/users/create";
+        return "admin/users/create";
     }
 
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
@@ -39,7 +38,7 @@ public class AdminController {
             return "admin/users/create";
         }
 
-        if(userRepository.findByLogin(user.getLogin()) != null) {
+        if (userRepository.findByLogin(user.getLogin()) != null) {
             result.addError(new FieldError("user", "login", "Login must be unique"));
             model.addAttribute("userRoles", UserRole.values());
             return "admin/users/create";
@@ -49,7 +48,7 @@ public class AdminController {
         try {
             userRepository.save(user);
             return "redirect:/";
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             model.addAttribute("userRoles", UserRole.values());
             return "admin/users/create";
         }

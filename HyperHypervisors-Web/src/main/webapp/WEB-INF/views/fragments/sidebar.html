@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
 <head>
 </head>
 <body>
-    <div th:fragment="sidebar" class="col-sm-3">
-        <div class="list-group">
-            <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item" th:href="@{/admin/users/create}">Create user</a>
-            <a class="list-group-item" th:href="@{/j_spring_security_logout}">Logout</a>
-        </div>
+<div th:fragment="sidebar" class="col-sm-3">
+    <div class="list-group">
+        <a sec:authorize="hasRole('ROLE_ADMIN')" class="list-group-item" th:href="@{/admin/users/create}">Create
+            user</a>
+        <a class="list-group-item" th:href="@{/changePassword}">Change password</a>
+        <a class="list-group-item" th:href="@{/j_spring_security_logout}">Logout</a>
     </div>
+</div>
 </body>
 </html>

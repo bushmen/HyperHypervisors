@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,17 +17,20 @@ public class User {
     private Long id;
 
     @Indexed(unique = true)
-    @NotNull(message = "{login.notempty}")
-    @NotEmpty(message = "{login.notempty}")
+    @NotNull(message = "{field.nonempty}")
+    @NotEmpty(message = "{field.nonempty}")
     private String login;
 
-    @NotNull(message = "{password.notempty}")
-    @NotEmpty(message = "{password.notempty}")
+    @NotNull(message = "{field.nonempty}")
+    @NotEmpty(message = "{field.nonempty}")
     private String password;
 
-    @NotNull(message = "{role.required}")
-    @Size(min = 1, message = "{role.required}")
+    @NotNull(message = "{value.required}")
+    @Size(min = 1, message = "{value.required}")
     private Collection<? extends UserRole> roles;
+
+    @RelatedTo(type = Relations.CONTROLS)
+    private Collection<ServerNode> servers;
 
     public Long getId() {
         return id;
@@ -60,26 +64,11 @@ public class User {
         this.roles = roles;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        User user = (User) o;
-        if (id == null) {
-            return super.equals(o);
-        }
-        return id.equals(user.id);
+    public Collection<ServerNode> getServers() {
+        return servers;
     }
 
-    @Override
-    public int hashCode() {
-
-        return id != null ? id.hashCode() : super.hashCode();
+    public void setServers(Collection<ServerNode> servers) {
+        this.servers = servers;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/headTag :: headTag">
 </head>
 <body>
@@ -13,8 +13,11 @@
     <div class="well col-sm-4 col-sm-offset-4">
         <div th:if="${loginError}" class="alert alert-danger">
             <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+
             <p>Your login attempt was not successful due to error:</p>
+
             <p th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></p>
+
             <p>Please, try again.</p>
         </div>
 
