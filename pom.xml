@@ -55,6 +55,11 @@
                 <artifactId>easymock</artifactId>
                 <version>${easymock.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.virtualbox</groupId>
+                <artifactId>vboxjws</artifactId>
+                <version>4.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -144,6 +149,11 @@
             <id>jboss-public-repo</id>
             <url>http://repository.jboss.org/</url>
             <name>JBoss public available repo</name>
+        </repository>
+        <repository>
+            <id>ProjectRepo</id>
+            <name>ProjectRepo</name>
+            <url>file://${project.basedir}/libs</url>
         </repository>
     </repositories>
 
