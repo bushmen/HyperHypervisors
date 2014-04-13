@@ -24,7 +24,7 @@ public class MainController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public String index() {
         return "index";
     }

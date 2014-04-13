@@ -55,11 +55,6 @@
                 <artifactId>easymock</artifactId>
                 <version>${easymock.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.virtualbox</groupId>
-                <artifactId>vboxjws</artifactId>
-                <version>4.3</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -174,7 +169,7 @@
     <distributionManagement>
         <site>
             <id>student</id>
-            <url>${student.scp.path}/HyperHypervisors</url>
+            <url>scp://buszko@student.agh.edu.pl:/home/ietgrp/buszko/public_html/HyperHypervisors</url>
         </site>
     </distributionManagement>
 
