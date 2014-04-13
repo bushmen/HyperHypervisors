@@ -1,8 +1,7 @@
 package pl.edu.agh.student.hyperhypervisors.agent;
 
-import org.virtualbox_4_3.IMachine;
-import org.virtualbox_4_3.IVirtualBox;
-import org.virtualbox_4_3.VirtualBoxManager;
+import org.virtualbox_4_3.*;
+import pl.edu.agh.student.hyperhypervisors.model.MachineDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +32,9 @@ public class VirtualBoxAgent {
         return new ArrayList<>(machinesMap.keySet());
     }
 
-    public String getMachineDescription(String machineName){
+    public MachineDescription getMachineDescription(String machineName){
         IMachine machine = machinesMap.get(machineName);
-        return "Name: " + machine.getName() + "\nOS: " + machine.getOSTypeId() + "\nMemory size:" + machine.getMemorySize() + "\nCPU's: " + machine.getCPUCount();
+        return new MachineDescription(machine.getName(), machine.getOSTypeId(), machine.getMemorySize(), machine.getCPUCount(), getDiskSpace(machineName));
     }
 
     public long getNumberOfCores(String machineName){
@@ -48,14 +47,18 @@ public class VirtualBoxAgent {
         return machine.getMemorySize();
     }
 
-//    public int getDiskSpace(String machineName){
-//        IMachine machine = machinesMap.get(machineName);
-//        List<IStorageController> storageControllers = machine.getStorageControllers();
-//        for(IStorageController controller : storageControllers){
-//            System.out.println(controller.getName());
-//        }
-//        return 0;
-//    }
+    public long getDiskSpace(String machineName){
+        IMachine machine = machinesMap.get(machineName);
+        for(IMediumAttachment attachment : machine.getMediumAttachments()){
+            if(attachment.getType().equals(DeviceType.HardDisk)){
+                IMedium medium = attachment.getMedium();
+                if(medium != null){
+                    return medium.getSize();
+                }
+            }
+        }
+        return 0;
+    }
 
     public void closeVirtualBoxAgent(){
         virtualBoxManager.disconnect();

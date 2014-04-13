@@ -55,11 +55,6 @@
                 <artifactId>easymock</artifactId>
                 <version>${easymock.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.virtualbox</groupId>
-                <artifactId>vboxjws</artifactId>
-                <version>4.3</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
