@@ -1,5 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.User;
@@ -9,36 +10,40 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class LoginUserServiceTest {
+public class LoginUserServiceTests {
 
     private static final String LOGIN = "testLogin";
+    private User userMock;
+    private UserRepository userRepositoryMock;
+    private LoginUserService testInstance;
+
+    @Before
+    public void setUp() throws Exception {
+        userMock = createMock(User.class);
+        userRepositoryMock = createMock(UserRepository.class);
+
+        testInstance = new LoginUserService();
+        testInstance.userRepository = userRepositoryMock;
+    }
 
     @Test
     public void testLoadExistingUserByName() {
-        User userMock = createMock(User.class);
-
-        UserRepository userRepositoryMock = createMock(UserRepository.class);
         expect(userRepositoryMock.findByLogin(LOGIN)).andReturn(userMock);
-
         replay(userMock, userRepositoryMock);
 
-        LoginUserService testInstance = new LoginUserService();
-        testInstance.userRepository = userRepositoryMock;
-
         UserSessionDetails result = testInstance.loadUserByUsername(LOGIN);
+        verify(userMock, userRepositoryMock);
+
         assertNotNull(result);
         assertEquals(userMock, result.getUser());
     }
 
     @Test(expected = UsernameNotFoundException.class)
     public void testLoadNonExistingUserByName() {
-        UserRepository userRepositoryMock = createMock(UserRepository.class);
         expect(userRepositoryMock.findByLogin(LOGIN)).andReturn(null);
         replay(userRepositoryMock);
 
-        LoginUserService testInstance = new LoginUserService();
-        testInstance.userRepository = userRepositoryMock;
-
         testInstance.loadUserByUsername(LOGIN);
+        verify(userRepositoryMock);
     }
 }
