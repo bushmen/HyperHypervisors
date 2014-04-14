@@ -1,22 +1,43 @@
 package pl.edu.agh.student.hyperhypervisors.model;
 
+import org.virtualbox_4_3.IMachine;
+import org.virtualbox_4_3.IMedium;
+import org.virtualbox_4_3.IMediumAttachment;
+
+import static org.virtualbox_4_3.DeviceType.HardDisk;
+
 public class MachineDescription {
+    private static final int EMPTY = 0;
+
     private String name;
     private String operationSystem;
     private long memorySize;
     private long cpuCount;
     private long diskSpace;
 
-    public MachineDescription(){
-
+    public MachineDescription(IMachine machine) {
+        this.name = machine.getName();
+        this.operationSystem = machine.getOSTypeId();
+        this.memorySize = machine.getMemorySize();
+        this.cpuCount = machine.getCPUCount();
+        diskSpace = getDiskSpace(machine);
     }
 
-    public MachineDescription(String name, String operationSystem, long memorySize, long cpuCount, long diskSpace){
-        this.name = name;
-        this.operationSystem = operationSystem;
-        this.memorySize = memorySize;
-        this.cpuCount = cpuCount;
-        this.diskSpace = diskSpace;
+    private long getDiskSpace(IMachine machine) {
+        for (IMediumAttachment attachment : machine.getMediumAttachments()) {
+            if (isHardDisk(attachment)) {
+                IMedium medium = attachment.getMedium();
+                if (medium != null) {
+                    return medium.getSize();
+                }
+            }
+        }
+
+        return EMPTY;
+    }
+
+    private boolean isHardDisk(IMediumAttachment attachment) {
+        return attachment.getType() == HardDisk;
     }
 
     public String getName() {
@@ -61,6 +82,6 @@ public class MachineDescription {
 
     @Override
     public String toString() {
-        return "Name: " + name + "\nOS: " + operationSystem + "\nHard disk size: " + diskSpace + "KB\nRAM size: " + memorySize + "\nCPU's: " + cpuCount;
+        return String.format("Name: %s\nOS: %s\nHard disk size: %dKB\nRAM size: %d\nCPU's: %d", name, operationSystem, diskSpace, memorySize, cpuCount);
     }
 }

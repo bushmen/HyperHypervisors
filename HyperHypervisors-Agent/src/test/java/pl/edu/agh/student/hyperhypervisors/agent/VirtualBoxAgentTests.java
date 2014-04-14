@@ -1,51 +1,71 @@
 package pl.edu.agh.student.hyperhypervisors.agent;
 
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.virtualbox_4_3.*;
+import org.virtualbox_4_3.IMachine;
+import org.virtualbox_4_3.IVirtualBox;
+import org.virtualbox_4_3.VirtualBoxManager;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.*;
 
 public class VirtualBoxAgentTests {
 
-    private VirtualBoxAgent vboxAgent = new VirtualBoxAgent();
+    private VirtualBoxManager virtualBoxManagerMock;
     private IVirtualBox virtualBoxMock;
-    private VirtualBoxManager vboxManagerMock;
-    private IMachine machineMock;
-    private IMediumAttachment mediumAttachmentMock;
-    private IMedium mediumMock;
-    private ArrayList<IMachine> machinesList;
-    private ArrayList<IMediumAttachment> attachmentsList;
+    private IMachine machineAMock;
+    private IMachine machineBMock;
 
+    private String testUrl = "url";
+    private String testUser = "user";
+    private String testPassword = "password";
+
+    private VirtualBoxAgent virtualBoxAgent;
 
     @Before
-    public void setup(){
-        vboxManagerMock = createMock(VirtualBoxManager.class);
+    public void setUp() throws Exception {
+        virtualBoxManagerMock = createMock(VirtualBoxManager.class);
         virtualBoxMock = createMock(IVirtualBox.class);
-        machineMock = createMock(IMachine.class);
-        mediumAttachmentMock = createMock(IMediumAttachment.class);
-        mediumMock = createMock(IMedium.class);
-        machinesList = new ArrayList<IMachine>();
-        machinesList.add(machineMock);
-        attachmentsList = new ArrayList<>();
-        attachmentsList.add(mediumAttachmentMock);
-        vboxAgent.setVirtualBoxManager(vboxManagerMock);
+        machineAMock = createMock(IMachine.class);
+        machineBMock = createMock(IMachine.class);
+
+        virtualBoxAgent = new VirtualBoxAgent(virtualBoxManagerMock, getConnectionDetails());
     }
 
     @Test
-    public void testGetMachinesNamesList(){
-        expect(vboxManagerMock.getVBox()).andReturn(virtualBoxMock);
-        vboxManagerMock.connect(anyString(), anyString(), anyString());
+    public void testShouldGetMachineNames() throws Exception {
+        virtualBoxManagerMock.connect(testUrl, testUser, testPassword);
+        expectLastCall();
+        expect(virtualBoxManagerMock.getVBox()).andReturn(virtualBoxMock);
+        expect(virtualBoxMock.getMachines()).andReturn(Arrays.asList(machineAMock, machineBMock));
+        expect(machineAMock.getName()).andReturn("A");
+        expect(machineBMock.getName()).andReturn("B");
+        virtualBoxManagerMock.cleanup();
+        expectLastCall();
+        virtualBoxManagerMock.disconnect();
+        expectLastCall();
 
-        expect(machineMock.getName()).andReturn("testMachine");
-        expect(virtualBoxMock.getMachines()).andReturn(machinesList);
-        replay(vboxManagerMock, machineMock, virtualBoxMock);
+        replay(virtualBoxManagerMock, virtualBoxMock, machineAMock, machineBMock);
 
-        vboxAgent.connectVBoxManager("test", "test", "test");
-        System.out.println(vboxAgent.getMachinesNamesList().size());
-        Assert.assertEquals("testMachine", vboxAgent.getMachinesNamesList().get(0));
+        List<String> machineNames = virtualBoxAgent.getMachinesNamesList();
+
+        verify(virtualBoxManagerMock, virtualBoxMock, machineAMock, machineBMock);
+
+        assertEquals(2, machineNames.size());
+        assertEquals("A", machineNames.get(0));
+        assertEquals("B", machineNames.get(1));
+    }
+
+    private ConnectionDetails getConnectionDetails() {
+        ConnectionDetails connectionDetails = new ConnectionDetails();
+
+        connectionDetails.setUrl(testUrl);
+        connectionDetails.setUser(testUser);
+        connectionDetails.setPassword(testPassword);
+
+        return connectionDetails;
     }
 }

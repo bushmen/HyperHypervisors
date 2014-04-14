@@ -1,6 +1,8 @@
 package pl.edu.agh.student.hyperhypervisors.agent;
 
-import org.virtualbox_4_3.*;
+import org.virtualbox_4_3.IMachine;
+import org.virtualbox_4_3.IVirtualBox;
+import org.virtualbox_4_3.VirtualBoxManager;
 import pl.edu.agh.student.hyperhypervisors.model.MachineDescription;
 
 import java.util.ArrayList;
@@ -9,72 +11,62 @@ import java.util.List;
 
 public class VirtualBoxAgent {
     private VirtualBoxManager virtualBoxManager;
+    private ConnectionDetails connectionDetails;
     private IVirtualBox virtualBox;
-    private HashMap<String, IMachine> machinesMap;
+    private HashMap<String, IMachine> machinesMap = new HashMap<>();
 
-    public VirtualBoxAgent(){
-        machinesMap = new HashMap<>();
-        virtualBoxManager = VirtualBoxManager.createInstance(null);
+    public VirtualBoxAgent(VirtualBoxManager virtualBoxManager, ConnectionDetails connectionDetails) {
+        this.virtualBoxManager = virtualBoxManager;
+        this.connectionDetails = connectionDetails;
     }
 
-    public void connectVBoxManager(String url, String user, String passwd) {
-        virtualBoxManager.connect(url, user, passwd);
+    public List<String> getMachinesNamesList() {
+        return execute(new Task<List<String>>() {
+            @Override
+            public List<String> run() {
+                return new ArrayList<>(machinesMap.keySet());
+            }
+        });
+    }
 
+    public MachineDescription getMachineDescription(final String machineName) {
+        return execute(new Task<MachineDescription>() {
+            @Override
+            public MachineDescription run() {
+                return new MachineDescription(machinesMap.get(machineName));
+            }
+        });
+    }
+
+    private void initialize() {
         virtualBox = virtualBoxManager.getVBox();
         createMachinesMap();
     }
 
     private void createMachinesMap() {
         List<IMachine> machines = virtualBox.getMachines();
-        for(IMachine machine : machines){
+
+        for (IMachine machine : machines) {
             machinesMap.put(machine.getName(), machine);
         }
     }
 
-    public List<String> getMachinesNamesList(){
-        return new ArrayList<>(machinesMap.keySet());
+    private <T extends Task<R>, R> R execute(T task) {
+        try {
+            connect();
+            return task.run();
+        } finally {
+            close();
+        }
     }
 
-    public MachineDescription getMachineDescription(String machineName){
-        IMachine machine = machinesMap.get(machineName);
-        return new MachineDescription(machine.getName(), machine.getOSTypeId(), machine.getMemorySize(), machine.getCPUCount(), getDiskSpace(machineName));
+    private void connect() {
+        virtualBoxManager.connect(connectionDetails.getUrl(), connectionDetails.getUser(), connectionDetails.getPassword());
+        initialize();
     }
 
-    public long getNumberOfCores(String machineName){
-        IMachine machine = machinesMap.get(machineName);
-        return machine.getCPUCount();
-    }
-
-    public long getMemorySize(String machineName){
-        IMachine machine = machinesMap.get(machineName);
-        return machine.getMemorySize();
-    }
-
-    public long getDiskSpace(String machineName){
-        IMachine machine = machinesMap.get(machineName);
-//        if(machine != null){
-            for(IMediumAttachment attachment : machine.getMediumAttachments()){
-                if(attachment.getType().equals(DeviceType.HardDisk)){
-                    IMedium medium = attachment.getMedium();
-                    if(medium != null){
-                        return medium.getSize();
-                    }
-                }
-            }
-//        }
-        return 0;
-    }
-
-    public void closeVirtualBoxAgent(){
+    private void close() {
         virtualBoxManager.disconnect();
         virtualBoxManager.cleanup();
-    }
-
-    public VirtualBoxManager getVirtualBoxManager() {
-        return virtualBoxManager;
-    }
-
-    public void setVirtualBoxManager(VirtualBoxManager virtualBoxManager) {
-        this.virtualBoxManager = virtualBoxManager;
     }
 }
