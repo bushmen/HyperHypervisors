@@ -12,9 +12,12 @@ public class VirtualBoxAgent {
     private IVirtualBox virtualBox;
     private HashMap<String, IMachine> machinesMap;
 
-    public VirtualBoxAgent(String url, String user, String passwd){
+    public VirtualBoxAgent(){
         machinesMap = new HashMap<>();
         virtualBoxManager = VirtualBoxManager.createInstance(null);
+    }
+
+    public void connectVBoxManager(String url, String user, String passwd) {
         virtualBoxManager.connect(url, user, passwd);
 
         virtualBox = virtualBoxManager.getVBox();
@@ -49,19 +52,29 @@ public class VirtualBoxAgent {
 
     public long getDiskSpace(String machineName){
         IMachine machine = machinesMap.get(machineName);
-        for(IMediumAttachment attachment : machine.getMediumAttachments()){
-            if(attachment.getType().equals(DeviceType.HardDisk)){
-                IMedium medium = attachment.getMedium();
-                if(medium != null){
-                    return medium.getSize();
+//        if(machine != null){
+            for(IMediumAttachment attachment : machine.getMediumAttachments()){
+                if(attachment.getType().equals(DeviceType.HardDisk)){
+                    IMedium medium = attachment.getMedium();
+                    if(medium != null){
+                        return medium.getSize();
+                    }
                 }
             }
-        }
+//        }
         return 0;
     }
 
     public void closeVirtualBoxAgent(){
         virtualBoxManager.disconnect();
         virtualBoxManager.cleanup();
+    }
+
+    public VirtualBoxManager getVirtualBoxManager() {
+        return virtualBoxManager;
+    }
+
+    public void setVirtualBoxManager(VirtualBoxManager virtualBoxManager) {
+        this.virtualBoxManager = virtualBoxManager;
     }
 }
