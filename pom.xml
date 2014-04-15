@@ -10,8 +10,8 @@
     <name>${project.artifactId}</name>
     <description>
         This project can be used to monitor virtualized infrastructure of machines with running applications.
-
-        Currently, the only supported hipervisor is Oracle VirtualBox version 4.3 and application servers: Apache Tomcat 7.x and Jboss EAP 6.1.
+        Currently, the only supported hipervisor is Oracle VirtualBox version 4.3 and application servers: Apache Tomcat
+        7.x and Jboss EAP 6.1.
     </description>
 
     <modules>
