@@ -7,14 +7,14 @@ import pl.edu.agh.student.hyperhypervisors.model.MachineDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class VirtualBoxAgent {
     private VirtualBoxManager virtualBoxManager;
     private ConnectionDetails connectionDetails;
     private IVirtualBox virtualBox;
-    private Map<String, IMachine> machinesMap = new HashMap<String, IMachine>();
+    private Map<String, IMachine> machinesMap = new HashMap<>();
 
     public VirtualBoxAgent(VirtualBoxManager virtualBoxManager, ConnectionDetails connectionDetails) {
         this.virtualBoxManager = virtualBoxManager;
@@ -25,7 +25,7 @@ public class VirtualBoxAgent {
         return execute(new Task<List<String>>() {
             @Override
             public List<String> run() {
-                return new ArrayList<String>(machinesMap.keySet());
+                return new ArrayList<>(machinesMap.keySet());
             }
         });
     }
