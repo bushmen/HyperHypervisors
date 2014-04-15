@@ -12,7 +12,9 @@
     <packaging>war</packaging>
 
     <name>${project.artifactId}</name>
-    <description>TODO</description>
+    <description>
+        This web application is used to check the condition of monitored infrastructure.
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

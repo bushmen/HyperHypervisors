@@ -12,7 +12,9 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>TODO</description>
+    <description>
+        This standalone application is daemon providing JMX MBeans used to obtain information about condition of monitored infrastructure.
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
