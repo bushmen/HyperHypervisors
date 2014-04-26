@@ -1,14 +1,13 @@
 package pl.edu.agh.student.hyperhypervisors.model;
 
+import org.virtualbox_4_3.DeviceType;
 import org.virtualbox_4_3.IMachine;
 import org.virtualbox_4_3.IMedium;
 import org.virtualbox_4_3.IMediumAttachment;
 
 import java.io.Serializable;
 
-import static org.virtualbox_4_3.DeviceType.HardDisk;
-
-public class MachineDescription implements Serializable {
+public class VirtualMachineDescription implements Serializable {
     private static final int EMPTY = 0;
 
     private String name;
@@ -17,7 +16,7 @@ public class MachineDescription implements Serializable {
     private long cpuCount;
     private long diskSpace;
 
-    public MachineDescription(IMachine machine) {
+    public VirtualMachineDescription(IMachine machine) {
         this.name = machine.getName();
         this.operationSystem = machine.getOSTypeId();
         this.memorySize = machine.getMemorySize();
@@ -39,7 +38,7 @@ public class MachineDescription implements Serializable {
     }
 
     private boolean isHardDisk(IMediumAttachment attachment) {
-        return attachment.getType() == HardDisk;
+        return attachment.getType() == DeviceType.HardDisk;
     }
 
     public String getName() {
@@ -56,22 +55,6 @@ public class MachineDescription implements Serializable {
 
     public void setOperationSystem(String operationSystem) {
         this.operationSystem = operationSystem;
-    }
-
-    public long getMemorySize() {
-        return memorySize;
-    }
-
-    public void setMemorySize(long memorySize) {
-        this.memorySize = memorySize;
-    }
-
-    public long getCpuCount() {
-        return cpuCount;
-    }
-
-    public void setCpuCount(long cpuCount) {
-        this.cpuCount = cpuCount;
     }
 
     public long getDiskSpace() {

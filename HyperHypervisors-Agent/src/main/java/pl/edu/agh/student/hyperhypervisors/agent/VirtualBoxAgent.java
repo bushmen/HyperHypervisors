@@ -3,7 +3,7 @@ package pl.edu.agh.student.hyperhypervisors.agent;
 import org.virtualbox_4_3.IMachine;
 import org.virtualbox_4_3.IVirtualBox;
 import org.virtualbox_4_3.VirtualBoxManager;
-import pl.edu.agh.student.hyperhypervisors.model.MachineDescription;
+import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +32,11 @@ public class VirtualBoxAgent implements VirtualBoxAgentMXBean {
     }
 
     @Override
-    public MachineDescription getMachineDescription(final String machineName){
-        return execute(new Task<MachineDescription>(){
+    public VirtualMachineDescription getMachineDescription(final String machineName) {
+        return execute(new Task<VirtualMachineDescription>() {
             @Override
-            public MachineDescription run(){
-                return new MachineDescription(machinesMap.get(machineName));
+            public VirtualMachineDescription run() {
+                return new VirtualMachineDescription(machinesMap.get(machineName));
             }
         });
     }

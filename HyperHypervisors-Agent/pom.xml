@@ -13,24 +13,21 @@
 
     <name>${project.artifactId}</name>
     <description>
-        This standalone application is daemon providing JMX MBeans used to obtain information about condition of monitored infrastructure.
+        This standalone application is daemon providing JMX MBeans used to obtain information about condition of
+        monitored infrastructure.
     </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sigar.version>1.6.5.132</sigar.version>
-        <vboxjws.version>4.3</vboxjws.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>ProjectRepo</id>
-            <name>ProjectRepo</name>
-            <url>file://${project.basedir}/libs</url>
-        </repository>
-    </repositories>
-
     <dependencies>
+        <dependency>
+            <groupId>pl.edu.agh.student</groupId>
+            <artifactId>HyperHypervisors-AgentClient</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.hyperic</groupId>
             <artifactId>sigar</artifactId>
@@ -39,7 +36,6 @@
         <dependency>
             <groupId>org.virtualbox</groupId>
             <artifactId>vboxjws</artifactId>
-            <version>${vboxjws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
