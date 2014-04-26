@@ -14,8 +14,8 @@ public class HyperHypervisorsAgent {
         mBeanServer.registerMBean(mbean, new ObjectName(mbean.getObjectName()));
         ConnectionDetails connectionDetails = new ConnectionDetails();
         connectionDetails.setUrl("http://localhost:18083");
-        connectionDetails.setUser("filipbuszko@gmail.com");
-        connectionDetails.setPassword("pjzjp6kw");
+        connectionDetails.setUser("");
+        connectionDetails.setPassword("");
         VirtualBoxAgent vboxMbean = new VirtualBoxAgent(VirtualBoxManager.createInstance(null),connectionDetails);
         mBeanServer.registerMBean(vboxMbean, new ObjectName("vbox:type=virtualBoxManager"));
         Thread.sleep(Long.MAX_VALUE);
