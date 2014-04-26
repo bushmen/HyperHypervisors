@@ -4,9 +4,11 @@ import org.virtualbox_4_3.IMachine;
 import org.virtualbox_4_3.IMedium;
 import org.virtualbox_4_3.IMediumAttachment;
 
+import java.io.Serializable;
+
 import static org.virtualbox_4_3.DeviceType.HardDisk;
 
-public class MachineDescription {
+public class MachineDescription implements Serializable {
     private static final int EMPTY = 0;
 
     private String name;

@@ -59,6 +59,14 @@ public class VirtualBoxAgentTests {
         assertEquals("B", machineNames.get(1));
     }
 
+    @Test
+    public void testShouldGetMachineDescritpion(){
+        virtualBoxManagerMock.connect(testUrl, testUser, testPassword);
+        expectLastCall();
+        expect(virtualBoxManagerMock.getVBox()).andReturn(virtualBoxMock);
+        expect(virtualBoxMock.getMachines()).andReturn(Arrays.asList(machineAMock, machineBMock));
+    }
+
     private ConnectionDetails getConnectionDetails() {
         ConnectionDetails connectionDetails = new ConnectionDetails();
 

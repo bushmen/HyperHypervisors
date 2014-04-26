@@ -1,16 +1,17 @@
 package pl.edu.agh.student.hyperhypervisors.agent;
 
-import org.virtualbox_4_3.IMachine;
-import org.virtualbox_4_3.IVirtualBox;
-import org.virtualbox_4_3.VirtualBoxManager;
-import pl.edu.agh.student.hyperhypervisors.model.MachineDescription;
+import org.virtualbox_4_3.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VirtualBoxAgent {
+import static org.virtualbox_4_3.DeviceType.HardDisk;
+
+public class VirtualBoxAgent implements VirtualBoxAgentMBean {
+    private static final int EMPTY = 0;
+
     private VirtualBoxManager virtualBoxManager;
     private ConnectionDetails connectionDetails;
     private IVirtualBox virtualBox;
@@ -21,6 +22,7 @@ public class VirtualBoxAgent {
         this.connectionDetails = connectionDetails;
     }
 
+    @Override
     public List<String> getMachinesNamesList() {
         return execute(new Task<List<String>>() {
             @Override
@@ -30,13 +32,71 @@ public class VirtualBoxAgent {
         });
     }
 
-    public MachineDescription getMachineDescription(final String machineName) {
-        return execute(new Task<MachineDescription>() {
+    @Override
+    public String getMachineName(final String machineName){
+        return execute(new Task<String>(){
             @Override
-            public MachineDescription run() {
-                return new MachineDescription(machinesMap.get(machineName));
+            public String run(){
+                return machinesMap.get(machineName).getName();
             }
         });
+    }
+
+    @Override
+    public String getMachineOperationSystem(final String machineName){
+        return execute(new Task<String>(){
+            @Override
+            public String run(){
+                return machinesMap.get(machineName).getOSTypeId();
+            }
+        });
+    }
+
+    @Override
+    public long getMachineMemorySize(final String machineName){
+        return execute(new Task<Long>(){
+            @Override
+            public Long run(){
+                return machinesMap.get(machineName).getMemorySize();
+            }
+        });
+    }
+
+    @Override
+    public long getMachineCPUCount(final String machineName){
+        return execute(new Task<Long>(){
+            @Override
+            public Long run(){
+                return machinesMap.get(machineName).getCPUCount();
+            }
+        });
+    }
+
+    @Override
+    public long getMachineDiskSpace(final String machineName){
+        return execute(new Task<Long>(){
+            @Override
+            public Long run(){
+                return getDiskSpace(machinesMap.get(machineName));
+            }
+        });
+    }
+
+    private long getDiskSpace(IMachine machine) {
+        for (IMediumAttachment attachment : machine.getMediumAttachments()) {
+            if (isHardDisk(attachment)) {
+                IMedium medium = attachment.getMedium();
+                if (medium != null) {
+                    return medium.getSize();
+                }
+            }
+        }
+
+        return EMPTY;
+    }
+
+    private boolean isHardDisk(IMediumAttachment attachment) {
+        return attachment.getType() == HardDisk;
     }
 
     private void initialize() {
