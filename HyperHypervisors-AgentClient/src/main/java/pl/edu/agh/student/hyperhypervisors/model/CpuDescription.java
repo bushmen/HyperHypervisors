@@ -1,5 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.model;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 
 public class CpuDescription implements Serializable {
@@ -10,6 +11,19 @@ public class CpuDescription implements Serializable {
     private long cacheSize;
     private int clockSpeed;
     private CpuTimeUsageDescription timeUsage;
+
+    public CpuDescription() {
+    }
+
+    @ConstructorProperties(value = {"cpuIndex", "vendor", "model", "cacheSize", "clockSpeed", "timeUsage"})
+    public CpuDescription(long cpuIndex, String vendor, String model, long cacheSize, int clockSpeed, CpuTimeUsageDescription timeUsage) {
+        this.cpuIndex = cpuIndex;
+        this.vendor = vendor;
+        this.model = model;
+        this.cacheSize = cacheSize;
+        this.clockSpeed = clockSpeed;
+        this.timeUsage = timeUsage;
+    }
 
     public long getCpuIndex() {
         return cpuIndex;

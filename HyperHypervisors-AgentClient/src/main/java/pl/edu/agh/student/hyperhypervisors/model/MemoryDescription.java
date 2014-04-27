@@ -1,5 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.model;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 
 public class MemoryDescription implements Serializable {
@@ -9,6 +10,18 @@ public class MemoryDescription implements Serializable {
     private long used;
     private long actualFree;
     private long actualUsed;
+
+    public MemoryDescription() {
+    }
+
+    @ConstructorProperties(value = {"total", "free", "used", "actualFree", "actualUsed"})
+    public MemoryDescription(long total, long free, long used, long actualFree, long actualUsed) {
+        this.total = total;
+        this.free = free;
+        this.used = used;
+        this.actualFree = actualFree;
+        this.actualUsed = actualUsed;
+    }
 
     public long getTotal() {
         return total;

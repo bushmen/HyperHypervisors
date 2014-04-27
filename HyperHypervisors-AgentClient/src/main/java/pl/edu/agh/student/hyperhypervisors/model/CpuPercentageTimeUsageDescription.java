@@ -1,5 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.model;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 
 public class CpuPercentageTimeUsageDescription implements Serializable {
@@ -9,6 +10,18 @@ public class CpuPercentageTimeUsageDescription implements Serializable {
     private double userTime;
     private double niceTime;
     private double waitTime;
+
+    public CpuPercentageTimeUsageDescription() {
+    }
+
+    @ConstructorProperties(value = {"idleTime", "systemTime", "userTime", "niceTime", "waitTime"})
+    public CpuPercentageTimeUsageDescription(double idleTime, double systemTime, double userTime, double niceTime, double waitTime) {
+        this.idleTime = idleTime;
+        this.systemTime = systemTime;
+        this.userTime = userTime;
+        this.niceTime = niceTime;
+        this.waitTime = waitTime;
+    }
 
     public double getIdleTime() {
         return idleTime;

@@ -5,6 +5,7 @@ import org.virtualbox_4_3.IMachine;
 import org.virtualbox_4_3.IMedium;
 import org.virtualbox_4_3.IMediumAttachment;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 
 public class VirtualMachineDescription implements Serializable {
@@ -16,12 +17,21 @@ public class VirtualMachineDescription implements Serializable {
     private long cpuCount;
     private long diskSpace;
 
+    public VirtualMachineDescription() {
+    }
+
     public VirtualMachineDescription(IMachine machine) {
-        this.name = machine.getName();
-        this.operationSystem = machine.getOSTypeId();
-        this.memorySize = machine.getMemorySize();
-        this.cpuCount = machine.getCPUCount();
+        this(machine.getName(), machine.getOSTypeId(), machine.getMemorySize(), machine.getCPUCount(), 0L);
         diskSpace = getDiskSpace(machine);
+    }
+
+    @ConstructorProperties(value = {"name", "operationSystem", "memorySize", "cpuCount", "diskSpace"})
+    public VirtualMachineDescription(String name, String operationSystem, long memorySize, long cpuCount, long diskSpace) {
+        this.name = name;
+        this.operationSystem = operationSystem;
+        this.memorySize = memorySize;
+        this.cpuCount = cpuCount;
+        this.diskSpace = diskSpace;
     }
 
     private long getDiskSpace(IMachine machine) {
@@ -63,6 +73,22 @@ public class VirtualMachineDescription implements Serializable {
 
     public void setDiskSpace(long diskSpace) {
         this.diskSpace = diskSpace;
+    }
+
+    public long getMemorySize() {
+        return memorySize;
+    }
+
+    public void setMemorySize(long memorySize) {
+        this.memorySize = memorySize;
+    }
+
+    public long getCpuCount() {
+        return cpuCount;
+    }
+
+    public void setCpuCount(long cpuCount) {
+        this.cpuCount = cpuCount;
     }
 
     @Override

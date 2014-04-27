@@ -12,21 +12,13 @@ public class ServerAgent implements ServerAgentMXBean {
 
     @Override
     public ServerDescription getServerDescription() throws Exception {
-        ServerDescription description = new ServerDescription();
-        description.setMemory(getMemoryDescription());
-        description.setCpus(getCpuDescriptions());
-        return description;
+        return new ServerDescription(getMemoryDescription(), getCpuDescriptions());
     }
 
     private MemoryDescription getMemoryDescription() throws Exception {
         Mem sigarMemory = sigar.getMem();
-        MemoryDescription memory = new MemoryDescription();
-        memory.setTotal(sigarMemory.getTotal());
-        memory.setFree(sigarMemory.getFree());
-        memory.setUsed(sigarMemory.getUsed());
-        memory.setActualFree(sigarMemory.getActualFree());
-        memory.setActualUsed(sigarMemory.getActualUsed());
-        return memory;
+        return new MemoryDescription(sigarMemory.getTotal(), sigarMemory.getFree(),
+                sigarMemory.getUsed(), sigarMemory.getActualFree(), sigarMemory.getActualUsed());
     }
 
     private List<CpuDescription> getCpuDescriptions() throws Exception {
@@ -43,41 +35,23 @@ public class ServerAgent implements ServerAgentMXBean {
     }
 
     private CpuDescription getCpuDescription(CpuInfo cpuInfo, Cpu absoluteTimeUsage, CpuPerc percentageTimeUsage, int cpuIndex) {
-        CpuDescription cpuDescription = new CpuDescription();
-        cpuDescription.setCpuIndex(cpuIndex);
-        cpuDescription.setCacheSize(cpuInfo.getCacheSize());
-        cpuDescription.setClockSpeed(cpuInfo.getMhz());
-        cpuDescription.setModel(cpuInfo.getModel());
-        cpuDescription.setVendor(cpuInfo.getVendor());
-        cpuDescription.setTimeUsage(getTimeUsage(absoluteTimeUsage, percentageTimeUsage));
-        return cpuDescription;
+        return new CpuDescription(cpuIndex, cpuInfo.getVendor(), cpuInfo.getModel(),
+                cpuInfo.getCacheSize(), cpuInfo.getMhz(), getTimeUsage(absoluteTimeUsage, percentageTimeUsage));
     }
 
     private CpuTimeUsageDescription getTimeUsage(Cpu absoluteTimeUsage, CpuPerc percentageTimeUsage) {
-        CpuTimeUsageDescription timeUsage = new CpuTimeUsageDescription();
-        timeUsage.setAbsoluteTimeUsage(getAbsoluteTimeUsage(absoluteTimeUsage));
-        timeUsage.setPercentageTimeUsage(getPercentageTimeUsage(percentageTimeUsage));
-        return timeUsage;
+        return new CpuTimeUsageDescription(getPercentageTimeUsage(percentageTimeUsage),
+                getAbsoluteTimeUsage(absoluteTimeUsage));
     }
 
     private CpuAbsoluteTimeUsageDescription getAbsoluteTimeUsage(Cpu absoluteTimeUsage) {
-        CpuAbsoluteTimeUsageDescription timeUsage = new CpuAbsoluteTimeUsageDescription();
-        timeUsage.setIdleTime(absoluteTimeUsage.getIdle());
-        timeUsage.setNiceTime(absoluteTimeUsage.getNice());
-        timeUsage.setSystemTime(absoluteTimeUsage.getSys());
-        timeUsage.setUserTime(absoluteTimeUsage.getUser());
-        timeUsage.setWaitTime(absoluteTimeUsage.getWait());
-        return timeUsage;
+        return new CpuAbsoluteTimeUsageDescription(absoluteTimeUsage.getIdle(), absoluteTimeUsage.getNice(),
+                absoluteTimeUsage.getSys(), absoluteTimeUsage.getUser(), absoluteTimeUsage.getWait());
     }
 
     private CpuPercentageTimeUsageDescription getPercentageTimeUsage(CpuPerc percentageTimeUsage) {
-        CpuPercentageTimeUsageDescription timeUsage = new CpuPercentageTimeUsageDescription();
-        timeUsage.setIdleTime(percentageTimeUsage.getIdle());
-        timeUsage.setNiceTime(percentageTimeUsage.getNice());
-        timeUsage.setSystemTime(percentageTimeUsage.getSys());
-        timeUsage.setUserTime(percentageTimeUsage.getUser());
-        timeUsage.setWaitTime(percentageTimeUsage.getWait());
-        return timeUsage;
+        return new CpuPercentageTimeUsageDescription(percentageTimeUsage.getIdle(), percentageTimeUsage.getNice(),
+                percentageTimeUsage.getSys(), percentageTimeUsage.getUser(), percentageTimeUsage.getWait());
     }
 
 }
