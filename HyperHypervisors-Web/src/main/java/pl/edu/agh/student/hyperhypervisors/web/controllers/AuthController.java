@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ServerNode;
 
 import java.util.List;
 
@@ -32,7 +33,10 @@ public class AuthController {
     @ResponseBody
     VirtualMachineDescription loginVM(@RequestParam String machineName) {
         try {
-            return new AgentConnector().getVirtualMachineDescription(machineName);
+            ServerNode localMachine = new ServerNode();
+            localMachine.setIpAddress("127.0.0.1");
+            localMachine.setAgentPort(9999);
+            return new AgentConnector(localMachine).getVirtualMachineDescription(machineName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +48,10 @@ public class AuthController {
     @ResponseBody
     List<String> loginVM() {
         try {
-            return new AgentConnector().getVirtualMachinesNames();
+            ServerNode localMachine = new ServerNode();
+            localMachine.setIpAddress("127.0.0.1");
+            localMachine.setAgentPort(9999);
+            return new AgentConnector(localMachine).getVirtualMachinesNames();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +63,10 @@ public class AuthController {
     @ResponseBody
     ServerDescription loginServer() {
         try {
-            return new AgentConnector().getSeverDescription();
+            ServerNode localMachine = new ServerNode();
+            localMachine.setIpAddress("127.0.0.1");
+            localMachine.setAgentPort(9999);
+            return new AgentConnector(localMachine).getServerDescription();
         } catch (Exception e) {
             e.printStackTrace();
         }

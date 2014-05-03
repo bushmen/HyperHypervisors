@@ -1,0 +1,72 @@
+<table class="table table-responsive">
+    <tr>
+        <td>Server name</td>
+        <td><%= node.name %></td>
+    </tr>
+    <tr>
+        <td>IP address</td>
+        <td><%= node.ipAddress %></td>
+    </tr>
+    <tr>
+        <td>Agent port</td>
+        <td><%= node.agentPort %></td>
+    </tr>
+</table>
+<table class="table table-responsive">
+    <tr>
+        <td>Total memory</td>
+        <td><%= description.memory.total %></td>
+    </tr>
+    <tr>
+        <td>Free memory</td>
+        <td><%= description.memory.free %></td>
+    </tr>
+    <tr>
+        <td>Actual free memory</td>
+        <td><%= description.memory.actualFree %></td>
+    </tr>
+    <tr>
+        <td>Used memory</td>
+        <td><%= description.memory.used %></td>
+    </tr>
+    <tr>
+        <td>Actual used memory</td>
+        <td><%= description.memory.actualUsed %></td>
+    </tr>
+</table>
+<% _.each(description.cpus, function (cpu) { %>
+<table class="table table-responsive">
+    <tr>
+        <td>CPU index</td>
+        <td><%= cpu.cpuIndex %></td>
+    </tr>
+    <tr>
+        <td>Vendor</td>
+        <td><%= cpu.vendor %></td>
+    </tr>
+    <tr>
+        <td>Model</td>
+        <td><%= cpu.model %></td>
+    </tr>
+    <tr>
+        <td>System time (%)</td>
+        <td><%= cpu.timeUsage.percentageTimeUsage.systemTime %></td>
+    </tr>
+    <tr>
+        <td>User time (%)</td>
+        <td><%= cpu.timeUsage.percentageTimeUsage.userTime %></td>
+    </tr>
+    <tr>
+        <td>Nice time (%)</td>
+        <td><%= cpu.timeUsage.percentageTimeUsage.niceTime %></td>
+    </tr>
+    <tr>
+        <td>Idle time (%)</td>
+        <td><%= cpu.timeUsage.percentageTimeUsage.idleTime %></td>
+    </tr>
+    <tr>
+        <td>Wait time (%)</td>
+        <td><%= cpu.timeUsage.percentageTimeUsage.waitTime %></td>
+    </tr>
+</table>
+<% }); %>

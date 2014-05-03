@@ -1,16 +1,12 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
-import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import java.util.Collection;
 
 @NodeEntity
-public class ApplicationServer {
-
-    @GraphId
-    private Long id;
+public class ApplicationServer extends NamedNode {
 
     private int jmxPort;
 
@@ -20,14 +16,6 @@ public class ApplicationServer {
 
     @RelatedTo(type = Relations.DISTRIBUTES)
     private Collection<Application> applications;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getJmxPort() {
         return jmxPort;

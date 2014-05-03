@@ -4,6 +4,7 @@ import pl.edu.agh.student.hyperhypervisors.agent.ServerAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.agent.VirtualBoxAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Machine;
 
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
@@ -15,7 +16,13 @@ import java.util.List;
 
 public class AgentConnector {
 
-    public ServerDescription getSeverDescription() throws Exception {
+    private Machine machine;
+
+    public AgentConnector(Machine machine) {
+        this.machine = machine;
+    }
+
+    public ServerDescription getServerDescription() throws Exception {
         return execute(new MBeanOperation<ServerDescription>() {
             @Override
             public ServerDescription run(MBeanServerConnection mBeanServerConnection) throws Exception {
@@ -51,7 +58,8 @@ public class AgentConnector {
     }
 
     private <T extends MBeanOperation<R>, R> R execute(T operation) throws Exception {
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:9999/server");
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://"
+                + machine.getIpAddress() + ":" + machine.getAgentPort() + "/server");
         try (JMXConnector jmxConnector = JMXConnectorFactory.connect(url, null)) {
             MBeanServerConnection mBeanServerConnection = jmxConnector.getMBeanServerConnection();
             return operation.run(mBeanServerConnection);

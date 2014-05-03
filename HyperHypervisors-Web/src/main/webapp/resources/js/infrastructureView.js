@@ -1,98 +1,63 @@
-$('#servers-tree').jstree({
-    'core': {
-//                'url' : '/infrastructure/servers',
-        'data': [
-            {
-                text: "Server 1",
-                type: "server",
-                children: [
-                    {
-                        text: "Hipervisor 1",
-                        type: "hipervisor",
-                        children: [
-                            {
-                                text: "Virtual machine 1",
-                                type: "vm",
-                                children: [
-                                    {
-                                        text: "App server 1",
-                                        type: "appServer",
-                                        children: [
-                                            {
-                                                text: "App 1",
-                                                type: "app"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        text: "Hipervisor 2",
-                        type: "hipervisor",
-                        children: [
-
-                        ]
-                    }
-                ]
-            },
-            {
-                text: "Server 2",
-                type: "server",
-                children: [
-                    {
-                        text: "Hipervisor 3",
-                        type: "hipervisor",
-                        children: [
-                            {
-                                text: "Virtual machine 2",
-                                type: "vm",
-                                children: [
-                                    {
-                                        text: "App server 2",
-                                        type: "appServer",
-                                        children: [
-                                            {
-                                                text: "App 2",
-                                                type: "app"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+function loadTemplate(template_name) {
+    if (!loadTemplate.tmpl_cache) {
+        loadTemplate.tmpl_cache = {};
+    }
+    if (!loadTemplate.tmpl_cache[template_name]) {
+        var tmpl_url = 'resources/html/' + template_name + '.html';
+        var tmpl_string;
+        $.ajax({
+            url: tmpl_url,
+            method: 'GET',
+            async: false,
+            success: function (data) {
+                tmpl_string = data;
             }
-        ]/*function (node) {
-         return { 'id' : node.id };
-         }*/
-    },
-    'types': {
-        '#': {
-            "valid_children": ["server"]
-        },
-        'server': {
+        });
+        loadTemplate.tmpl_cache[template_name] = tmpl_string;
+    }
+    return loadTemplate.tmpl_cache[template_name];
+}
+
+$(document).ready(function () {
+    $.ajax({
+        'url': 'infrastructure/data',
+        'success': function (data) {
+            $('#servers-tree').jstree({
+                'core': {
+                    'data': data
+                },
+                'types': {
+                    '#': {
+                        "valid_children": ["server"]
+                    },
+                    'server': {
 //                    "icon" : "/resources/img/server.png",
-            "valid_children": ["hypervisor"]
-        },
-        'hypervisor': {
+                        "valid_children": ["hypervisor"]
+                    },
+                    'hypervisor': {
 //                    "icon" : "/resources/img/hypervisor.png",
-            "valid_children": ["vm"]
-        },
-        'vm': {
+                        "valid_children": ["vm"]
+                    },
+                    'vm': {
 //                    "icon" : "/resources/img/vm.png",
-            "valid_children": ["appServer"]
-        },
-        'appServer': {
+                        "valid_children": ["appServer"]
+                    },
+                    'appServer': {
 //                    "icon" : "/resources/img/appServer.png",
-            "valid_children": ["app"]
-        },
-        'app': {
+                        "valid_children": ["app"]
+                    },
+                    'app': {
 //                    "icon" : "/resources/img/app.png",
-            "valid_children": []
+                        "valid_children": []
+                    }
+                },
+                'plugins': ["types"]
+            }).on('select_node.jstree', function (event, selectData) {
+                var node = selectData.node;
+                console.log(node);
+                var template = _.template(loadTemplate(node.type));
+                $('#data-table').html(template(node.original));
+            });
         }
-    },
-    'plugins': ["types"]
+    });
 });

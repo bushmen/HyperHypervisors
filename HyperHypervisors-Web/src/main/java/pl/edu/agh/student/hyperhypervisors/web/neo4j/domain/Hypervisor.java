@@ -1,31 +1,19 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
-import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import java.util.Collection;
 
 @NodeEntity
-public class Hipervisor {
-
-    @GraphId
-    private Long id;
+public class Hypervisor extends NamedNode {
 
     private String login;
 
     private String password;
 
-    @RelatedTo(type = Relations.HIPERVISES)
+    @RelatedTo(type = Relations.HYPERVISES)
     private Collection<VirtualMachine> virtualMachines;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getLogin() {
         return login;

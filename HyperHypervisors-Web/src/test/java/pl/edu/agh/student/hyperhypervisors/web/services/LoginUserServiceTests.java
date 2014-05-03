@@ -1,9 +1,10 @@
-package pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories;
+package pl.edu.agh.student.hyperhypervisors.web.services;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.User;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.UserRepository;
 import pl.edu.agh.student.hyperhypervisors.web.session.UserSessionDetails;
 
 import static org.easymock.EasyMock.*;

@@ -1,6 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
-public abstract class Machine {
+public abstract class Machine extends NamedNode {
 
     private String ipAddress;
 
