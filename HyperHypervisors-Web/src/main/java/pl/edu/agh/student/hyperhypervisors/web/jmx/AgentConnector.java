@@ -4,7 +4,7 @@ import pl.edu.agh.student.hyperhypervisors.agent.ServerAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.agent.VirtualBoxAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
-import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Machine;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ServerNode;
 
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
@@ -16,9 +16,9 @@ import java.util.List;
 
 public class AgentConnector {
 
-    private Machine machine;
+    private ServerNode machine;
 
-    public AgentConnector(Machine machine) {
+    public AgentConnector(ServerNode machine) {
         this.machine = machine;
     }
 

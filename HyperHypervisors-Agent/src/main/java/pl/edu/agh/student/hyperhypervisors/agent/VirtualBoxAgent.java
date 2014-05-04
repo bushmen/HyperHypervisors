@@ -36,7 +36,10 @@ public class VirtualBoxAgent implements VirtualBoxAgentMXBean {
         return execute(new Task<VirtualMachineDescription>() {
             @Override
             public VirtualMachineDescription run() {
-                return new VirtualMachineDescription(machinesMap.get(machineName));
+                if (machinesMap.containsKey(machineName)) {
+                    return new VirtualMachineDescription(machinesMap.get(machineName));
+                }
+                return null;
             }
         });
     }

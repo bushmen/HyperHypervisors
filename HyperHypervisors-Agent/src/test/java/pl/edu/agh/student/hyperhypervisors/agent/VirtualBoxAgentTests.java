@@ -60,11 +60,13 @@ public class VirtualBoxAgentTests {
     }
 
     @Test
-    public void testShouldGetMachineDescritpion(){
+    public void testShouldGetMachineDescritpion() {
         virtualBoxManagerMock.connect(testUrl, testUser, testPassword);
         expectLastCall();
         expect(virtualBoxManagerMock.getVBox()).andReturn(virtualBoxMock);
         expect(virtualBoxMock.getMachines()).andReturn(Arrays.asList(machineAMock, machineBMock));
+
+        //TODO unfinished?
     }
 
     private ConnectionDetails getConnectionDetails() {

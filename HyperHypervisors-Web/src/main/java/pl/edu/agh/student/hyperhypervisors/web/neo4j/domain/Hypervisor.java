@@ -1,5 +1,6 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
@@ -8,8 +9,10 @@ import java.util.Collection;
 @NodeEntity
 public class Hypervisor extends NamedNode {
 
+    @NotEmpty(message = "{field.nonempty}")
     private String login;
 
+    @NotEmpty(message = "{field.nonempty}")
     private String password;
 
     @RelatedTo(type = Relations.HYPERVISES)

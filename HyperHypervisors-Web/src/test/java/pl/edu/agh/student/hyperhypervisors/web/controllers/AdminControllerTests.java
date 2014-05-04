@@ -103,7 +103,7 @@ public class AdminControllerTests {
         assertEquals("admin/users/create", result);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void testCreateUserSaveException() throws Exception {
         expect(userMock.getLogin()).andReturn(LOGIN);
         expect(userMock.getPassword()).andReturn(PASSWORD);
@@ -120,7 +120,5 @@ public class AdminControllerTests {
 
         String result = testInstance.create(userMock, bindingResultMock, modelMock);
         verify(userMock, userRepositoryMock, passwordEncoderMock, bindingResultMock, modelMock);
-
-        assertEquals("admin/users/create", result);
     }
 }
