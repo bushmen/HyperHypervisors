@@ -45,13 +45,8 @@ public class AdminController {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        try {
-            userRepository.save(user);
-            return "redirect:/";
-        } catch (RuntimeException e) {
-            model.addAttribute("userRoles", UserRole.values());
-            return "admin/users/create";
-        }
+        userRepository.save(user);
+        return "redirect:/";
     }
 
 

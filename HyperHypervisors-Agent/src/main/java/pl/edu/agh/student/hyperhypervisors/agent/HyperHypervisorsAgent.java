@@ -32,6 +32,7 @@ public class HyperHypervisorsAgent {
         registeredMBeans.add(mBeanServer.registerMBean(serverAgentMBean, new ObjectName("server:type=ServerAgent")));
 
         ConnectionDetails connectionDetails = new ConnectionDetails();
+        //TODO to properties file
         connectionDetails.setUrl("http://localhost:18083");
         connectionDetails.setUser("artur");
         connectionDetails.setPassword("MojPiotrus1");

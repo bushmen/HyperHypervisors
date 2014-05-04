@@ -8,13 +8,15 @@
         <div th:replace="fragments/sidebar :: sidebar"></div>
 
         <div class="col-sm-9">
-            <div class="panel-body">
-                <button class="btn btn-success">Add</button>
-                <button class="btn btn-warning">Modify</button>
-                <button class="btn btn-danger">Remove</button>
-            </div>
             <div class="col-sm-12">
-                <div class="col-sm-5" id="servers-tree"></div>
+                <div class="col-sm-5">
+                    <div class="panel-body">
+                        <a class="btn btn-success" th:href="@{/infrastructure/server}">Add server</a>
+                        <a class="btn btn-warning" onclick="addChild();">Add child</a>
+                        <a class="btn btn-danger" onclick="remove();">Remove</a>
+                    </div>
+                    <div id="servers-tree"></div>
+                </div>
                 <div id="data-table" class="col-sm-7"></div>
             </div>
         </div>
