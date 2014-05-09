@@ -4,10 +4,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @NodeEntity
 public class Hypervisor extends NamedNode {
+
+    @NotNull(message = "{field.nonempty}")
+    private int port;
 
     @NotEmpty(message = "{field.nonempty}")
     private String login;
@@ -17,6 +21,14 @@ public class Hypervisor extends NamedNode {
 
     @RelatedTo(type = Relations.HYPERVISES)
     private Collection<VirtualMachine> virtualMachines;
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     public String getLogin() {
         return login;
