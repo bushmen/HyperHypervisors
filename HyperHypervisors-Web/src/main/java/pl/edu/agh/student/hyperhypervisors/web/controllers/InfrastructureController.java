@@ -5,7 +5,9 @@ import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAddressData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.ServerData;
+import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.*;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.*;
 import pl.edu.agh.student.hyperhypervisors.web.services.InfrastructureService;
@@ -79,8 +81,8 @@ public class InfrastructureController {
     }
 
     @RequestMapping(value = "/server/{serverId}/new-child", method = RequestMethod.POST)
-    public String createHypervisor(@Valid @ModelAttribute(value = "hypervisor") Hypervisor hypervisor,
-                                   BindingResult result, @ModelAttribute @PathVariable Long serverId, Principal principal) {
+    public String createHypervisor(@Valid @ModelAttribute(value = "hypervisor") Hypervisor hypervisor, BindingResult result,
+                                   @ModelAttribute @PathVariable Long serverId, Principal principal) throws Exception {
         if (result.hasErrors()) {
             return "infrastructure/create-hypervisor";
         }
@@ -93,48 +95,57 @@ public class InfrastructureController {
             return "redirect:/";
         }
 
-        //TODO create VMs fetched from agent?
-
         Hypervisor savedHypervisor = hypervisorRepository.save(hypervisor);
+        List<String> vmNames = new AgentConnector(serverNode).getVirtualMachinesNames(hypervisor);
+        for (String vmName : vmNames) {
+            VirtualMachine vm = new VirtualMachine();
+            vm.setName(vmName);
+            VirtualMachine savedVM = virtualMachineRepository.save(vm);
+            savedHypervisor.getVirtualMachines().add(savedVM);
+        }
+        savedHypervisor = hypervisorRepository.save(savedHypervisor);
         serverNode.getHypervisors().add(savedHypervisor);
         serverNodeRepository.save(serverNode);
         return "redirect:/infrastructure";
     }
 
-    @RequestMapping(value = "/hypervisor/{hypervisorId}/new-child", method = RequestMethod.GET)
-    public String createVirtualMachineView(@ModelAttribute(value = "vm") VirtualMachine virtualMachine,
-                                           @ModelAttribute @PathVariable Long hypervisorId) {
-        return "infrastructure/create-vm";
+    @RequestMapping(value = "/vm/{vmId}/new-ip", method = RequestMethod.GET)
+    public String setVMIPAddressView(@ModelAttribute(value = "vm") ChangeIpAddressData vm, @ModelAttribute @PathVariable Long vmId) {
+        return "infrastructure/set-vm-ip";
     }
 
-    @RequestMapping(value = "/hypervisor/{hypervisorId}/new-child", method = RequestMethod.POST)
-    public String createVirtualMachine(@Valid @ModelAttribute(value = "vm") VirtualMachine virtualMachine,
-                                       BindingResult result, @ModelAttribute @PathVariable Long hypervisorId, Principal principal) {
+    @RequestMapping(value = "/vm/{vmId}/new-ip", method = RequestMethod.POST)
+    public String setVMIPAddress(@Valid @ModelAttribute(value = "vm") ChangeIpAddressData vm, BindingResult result,
+                                 @ModelAttribute @PathVariable Long vmId, Principal principal) {
         if (result.hasErrors()) {
-            return "infrastructure/create-vm";
+            return "infrastructure/set-vm-ip";
         }
 
-        Hypervisor hypervisor = hypervisorRepository.findOne(hypervisorId);
         User user = userRepository.findByLogin(principal.getName());
         Collection<ServerNode> userServerNodes = template.fetch(user.getServers());
+        VirtualMachine virtualMachine = virtualMachineRepository.findOne(vmId);
+        virtualMachine.setIpAddress(vm.getIpAddress());
 
         //TODO can do better
-        boolean allowed = false;
+        Hypervisor vmsHypervisor = null;
         for (ServerNode serverNode : userServerNodes) {
             Collection<Hypervisor> serversHypervisors = template.fetch(serverNode.getHypervisors());
-            if (serversHypervisors.contains(hypervisor)) {
-                allowed = true;
-                break;
+            for (Hypervisor hypervisor : serversHypervisors) {
+                Collection<VirtualMachine> virtualMachines = template.fetch(hypervisor.getVirtualMachines());
+                if (virtualMachines.contains(virtualMachine)) {
+                    vmsHypervisor = hypervisor;
+                    break;
+                }
             }
         }
-        if (!allowed) {
+        if (vmsHypervisor == null) {
             //TODO not allowed
             return "redirect:/";
         }
 
         VirtualMachine savedVirtualMachine = virtualMachineRepository.save(virtualMachine);
-        hypervisor.getVirtualMachines().add(savedVirtualMachine);
-        hypervisorRepository.save(hypervisor);
+        vmsHypervisor.getVirtualMachines().add(savedVirtualMachine);
+        hypervisorRepository.save(vmsHypervisor);
         return "redirect:/infrastructure";
     }
 

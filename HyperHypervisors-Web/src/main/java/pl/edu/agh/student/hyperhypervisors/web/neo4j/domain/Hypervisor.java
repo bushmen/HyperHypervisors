@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
@@ -11,6 +13,8 @@ import java.util.Collection;
 public class Hypervisor extends NamedNode {
 
     @NotNull(message = "{field.nonempty}")
+    @Min(value = 1, message = "{port.range}")
+    @Max(value = 65536, message = "{port.range}")
     private int port;
 
     @NotEmpty(message = "{field.nonempty}")

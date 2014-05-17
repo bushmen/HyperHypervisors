@@ -7,44 +7,44 @@ import org.virtualbox_4_3.IMediumAttachment;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VirtualMachineDescription implements Serializable {
-    private static final int EMPTY = 0;
-
     private String name;
     private String operationSystem;
     private long memorySize;
     private long cpuCount;
-    private long diskSpace;
+    private Map<String, Long> disksSpace;
 
     public VirtualMachineDescription() {
     }
 
     public VirtualMachineDescription(IMachine machine) {
-        this(machine.getName(), machine.getOSTypeId(), machine.getMemorySize(), machine.getCPUCount(), 0L);
-        diskSpace = getDiskSpace(machine);
+        this(machine.getName(), machine.getOSTypeId(), machine.getMemorySize(), machine.getCPUCount(), null);
+        disksSpace = getDisksSpace(machine);
     }
 
-    @ConstructorProperties(value = {"name", "operationSystem", "memorySize", "cpuCount", "diskSpace"})
-    public VirtualMachineDescription(String name, String operationSystem, long memorySize, long cpuCount, long diskSpace) {
+    @ConstructorProperties(value = {"name", "operationSystem", "memorySize", "cpuCount", "disksSpace"})
+    public VirtualMachineDescription(String name, String operationSystem, long memorySize, long cpuCount, Map<String, Long> disksSpace) {
         this.name = name;
         this.operationSystem = operationSystem;
         this.memorySize = memorySize;
         this.cpuCount = cpuCount;
-        this.diskSpace = diskSpace;
+        this.disksSpace = disksSpace;
     }
 
-    private long getDiskSpace(IMachine machine) {
+    private Map<String, Long> getDisksSpace(IMachine machine) {
+        Map<String, Long> disks = new HashMap<>();
         for (IMediumAttachment attachment : machine.getMediumAttachments()) {
             if (isHardDisk(attachment)) {
                 IMedium medium = attachment.getMedium();
                 if (medium != null) {
-                    return medium.getSize();
+                    disks.put(medium.getName(), medium.getSize());
                 }
             }
         }
-
-        return EMPTY;
+        return disks;
     }
 
     private boolean isHardDisk(IMediumAttachment attachment) {
@@ -67,12 +67,12 @@ public class VirtualMachineDescription implements Serializable {
         this.operationSystem = operationSystem;
     }
 
-    public long getDiskSpace() {
-        return diskSpace;
+    public Map<String, Long> getDisksSpace() {
+        return disksSpace;
     }
 
-    public void setDiskSpace(long diskSpace) {
-        this.diskSpace = diskSpace;
+    public void setDisksSpace(Map<String, Long> disksSpace) {
+        this.disksSpace = disksSpace;
     }
 
     public long getMemorySize() {
@@ -93,6 +93,6 @@ public class VirtualMachineDescription implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Name: %s\nOS: %s\nHard disk size: %dKB\nRAM size: %d\nCPU's: %d", name, operationSystem, diskSpace, memorySize, cpuCount);
+        return String.format("Name: %s\nOS: %s\nRAM size: %d\nCPU's: %d", name, operationSystem, memorySize, cpuCount);
     }
 }

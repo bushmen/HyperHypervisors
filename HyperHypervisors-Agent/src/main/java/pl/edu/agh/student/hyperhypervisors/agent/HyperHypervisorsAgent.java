@@ -24,23 +24,18 @@ public class HyperHypervisorsAgent {
     private static Logger logger = LoggerFactory.getLogger(HyperHypervisorsAgent.class);
 
     public static void main(String[] args) throws Exception {
-
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
 
         mBeanServer = ManagementFactory.getPlatformMBeanServer();
         ServerAgent serverAgentMBean = new ServerAgent();
         registeredMBeans.add(mBeanServer.registerMBean(serverAgentMBean, new ObjectName("server:type=ServerAgent")));
 
-        ConnectionDetails connectionDetails = new ConnectionDetails();
-        //TODO to properties file
-        connectionDetails.setUrl("http://localhost:18083");
-        connectionDetails.setUser("");
-        connectionDetails.setPassword("");
-        VirtualBoxAgent vboxMbean = new VirtualBoxAgent(VirtualBoxManager.createInstance(null), connectionDetails);
+        VirtualBoxAgent vboxMbean = new VirtualBoxAgent(VirtualBoxManager.createInstance(null));
         registeredMBeans.add(mBeanServer.registerMBean(vboxMbean, new ObjectName("vbox:type=VirtualBoxAgent")));
 
-        LocateRegistry.createRegistry(9999);
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:9999/server");
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : 9999;
+        LocateRegistry.createRegistry(port);
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + port + "/server");
         connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
         connectorServer.start();
 

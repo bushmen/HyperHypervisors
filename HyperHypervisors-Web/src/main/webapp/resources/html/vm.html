@@ -16,8 +16,32 @@
         <td>Memory size</td>
         <td><%= description.memorySize %></td>
     </tr>
-    <tr>
-        <td>Disk space</td>
-        <td><%= description.diskSpace %></td>
-    </tr>
 </table>
+
+<div class="panel-body">
+    <a href="infrastructure/vm/<%= node.id %>/new-ip" class="btn btn-primary">Set IP address</a>
+</div>
+
+<div class="panel-group" id="disks-accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#disks-accordion" href="#disks-accordion-collapse">
+                    Hard Disks
+                </a>
+            </h4>
+        </div>
+        <div id="disks-accordion-collapse" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table table-condensed table-responsive">
+                    <% _.each(description.disksSpace, function (diskSize, diskName) { %>
+                    <tr>
+                        <td><%= diskName %></td>
+                        <td><%= diskSize %></td>
+                    </tr>
+                    <% }); %>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

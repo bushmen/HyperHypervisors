@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface VirtualBoxAgentMXBean {
 
-    List<String> getMachinesNamesList();
+    List<String> getMachinesNamesList(String url, String user, String password);
 
-    VirtualMachineDescription getMachineDescription(String machineName);
+    VirtualMachineDescription getMachineDescription(String url, String user, String password, String machineName);
 }

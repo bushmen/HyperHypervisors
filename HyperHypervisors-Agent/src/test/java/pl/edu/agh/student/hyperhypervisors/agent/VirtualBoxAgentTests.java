@@ -32,7 +32,7 @@ public class VirtualBoxAgentTests {
         machineAMock = createMock(IMachine.class);
         machineBMock = createMock(IMachine.class);
 
-        virtualBoxAgent = new VirtualBoxAgent(virtualBoxManagerMock, getConnectionDetails());
+        virtualBoxAgent = new VirtualBoxAgent(virtualBoxManagerMock);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class VirtualBoxAgentTests {
 
         replay(virtualBoxManagerMock, virtualBoxMock, machineAMock, machineBMock);
 
-        List<String> machineNames = virtualBoxAgent.getMachinesNamesList();
+        List<String> machineNames = virtualBoxAgent.getMachinesNamesList(testUrl, testUser, testPassword);
 
         verify(virtualBoxManagerMock, virtualBoxMock, machineAMock, machineBMock);
 
@@ -67,15 +67,5 @@ public class VirtualBoxAgentTests {
         expect(virtualBoxMock.getMachines()).andReturn(Arrays.asList(machineAMock, machineBMock));
 
         //TODO unfinished?
-    }
-
-    private ConnectionDetails getConnectionDetails() {
-        ConnectionDetails connectionDetails = new ConnectionDetails();
-
-        connectionDetails.setUrl(testUrl);
-        connectionDetails.setUser(testUser);
-        connectionDetails.setPassword(testPassword);
-
-        return connectionDetails;
     }
 }

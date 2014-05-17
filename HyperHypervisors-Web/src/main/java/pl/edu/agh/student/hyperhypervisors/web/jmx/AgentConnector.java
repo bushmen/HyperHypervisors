@@ -4,6 +4,7 @@ import pl.edu.agh.student.hyperhypervisors.agent.ServerAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.agent.VirtualBoxAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Hypervisor;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ServerNode;
 
 import javax.management.JMX;
@@ -32,24 +33,28 @@ public class AgentConnector {
         });
     }
 
-    public List<String> getVirtualMachinesNames() throws Exception {
+    public List<String> getVirtualMachinesNames(final Hypervisor hypervisor) throws Exception {
         return execute(new MBeanOperation<List<String>>() {
             @Override
             public List<String> run(MBeanServerConnection mBeanServerConnection) throws Exception {
                 return createMBeanProxy(mBeanServerConnection, "vbox:type=VirtualBoxAgent", VirtualBoxAgentMXBean.class)
-                        .getMachinesNamesList();
+                        .getMachinesNamesList(getVMUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword());
             }
         });
     }
 
-    public VirtualMachineDescription getVirtualMachineDescription(final String machineName) throws Exception {
+    public VirtualMachineDescription getVirtualMachineDescription(final Hypervisor hypervisor, final String machineName) throws Exception {
         return execute(new MBeanOperation<VirtualMachineDescription>() {
             @Override
             public VirtualMachineDescription run(MBeanServerConnection mBeanServerConnection) throws Exception {
                 return createMBeanProxy(mBeanServerConnection, "vbox:type=VirtualBoxAgent", VirtualBoxAgentMXBean.class)
-                        .getMachineDescription(machineName);
+                        .getMachineDescription(getVMUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword(), machineName);
             }
         });
+    }
+
+    private String getVMUrl(Hypervisor hypervisor) {
+        return "http://" + machine.getIpAddress() + ":" + hypervisor.getPort();
     }
 
     private <T> T createMBeanProxy(MBeanServerConnection mBeanServerConnection,

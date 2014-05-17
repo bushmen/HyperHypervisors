@@ -8,22 +8,9 @@
         <div th:replace="fragments/sidebar :: sidebar"></div>
 
         <div class="col-sm-9">
-            <form th:action="@{/infrastructure/hypervisor/} + ${hypervisorId} + '/new-child'" method="post"
-                  class="form-horizontal">
+            <form th:action="@{/infrastructure/vm/} + ${vmId} + '/new-ip'" method="post" class="form-horizontal">
                 <fieldset>
-                    <legend>Create virtual machine</legend>
-                    <div class="form-group">
-                        <label for="name" class="col-sm-4 control-label">Name</label>
-
-                        <div class="col-sm-8">
-                            <input type="text" id="name" name="name"
-                                   th:value="*{vm.name}" class="form-control"
-                                   placeholder="Name"/>
-
-                            <p th:if="${#fields.hasErrors('vm.name')}"
-                               th:errors="*{vm.name}" class="error"></p>
-                        </div>
-                    </div>
+                    <legend>Set IP address</legend>
                     <div class="form-group">
                         <label for="ipAddress" class="col-sm-4 control-label">IP address</label>
 

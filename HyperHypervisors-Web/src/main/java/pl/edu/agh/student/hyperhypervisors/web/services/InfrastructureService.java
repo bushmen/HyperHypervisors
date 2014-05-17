@@ -11,6 +11,9 @@ import pl.edu.agh.student.hyperhypervisors.web.dto.ServerData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.VirtualMachineData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.*;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.ApplicationServerRepository;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.HypervisorRepository;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.VirtualMachineRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +21,15 @@ import java.util.List;
 
 @Service
 public class InfrastructureService {
+
+    @Autowired
+    HypervisorRepository hypervisorRepository;
+
+    @Autowired
+    VirtualMachineRepository virtualMachineRepository;
+
+    @Autowired
+    ApplicationServerRepository applicationServerRepository;
 
     @Autowired
     Neo4jOperations template;
@@ -52,12 +64,38 @@ public class InfrastructureService {
 
     private List<VirtualMachineData> getVirtualMachinesData(AgentConnector agentConnector, Hypervisor hypervisor) throws Exception {
         Collection<VirtualMachine> virtualMachines = template.fetch(hypervisor.getVirtualMachines());
+        List<String> vmNames = agentConnector.getVirtualMachinesNames(hypervisor);
+        List<String> vmNamesInDb = new ArrayList<>();
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            vmNamesInDb.add(virtualMachine.getName());
+        }
+
+        for (String name : vmNames) {
+            if (!vmNamesInDb.contains(name)) {
+                VirtualMachine vm = new VirtualMachine();
+                vm.setName(name);
+                VirtualMachine savedVM = virtualMachineRepository.save(vm);
+                hypervisor.getVirtualMachines().add(savedVM);
+            }
+        }
+
+        virtualMachines = template.fetch(hypervisor.getVirtualMachines());
+        return getVirtualMachinesDescriptions(agentConnector, hypervisor, virtualMachines);
+    }
+
+    private List<VirtualMachineData> getVirtualMachinesDescriptions(AgentConnector agentConnector, Hypervisor hypervisor,
+                                                                    Collection<VirtualMachine> virtualMachines) throws Exception {
         List<VirtualMachineData> virtualMachinesData = new ArrayList<>();
         for (VirtualMachine virtualMachine : virtualMachines) {
             VirtualMachineData virtualMachineData = new VirtualMachineData();
             virtualMachineData.setNode(virtualMachine);
 
-            VirtualMachineDescription vmDescription = agentConnector.getVirtualMachineDescription(virtualMachine.getName());
+            VirtualMachineDescription vmDescription = agentConnector.getVirtualMachineDescription(hypervisor, virtualMachine.getName());
+            if (vmDescription.getName() == null) {
+                hypervisor.getVirtualMachines().remove(virtualMachine);
+                virtualMachineRepository.deleteWithSubtree(virtualMachine);
+                continue;
+            }
             virtualMachineData.setDescription(vmDescription);
             virtualMachineData.setChildren(getApplicationServersData(virtualMachine));
             virtualMachinesData.add(virtualMachineData);
