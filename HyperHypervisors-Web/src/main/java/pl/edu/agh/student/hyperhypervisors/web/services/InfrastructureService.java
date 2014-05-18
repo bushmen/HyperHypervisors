@@ -17,6 +17,7 @@ import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.VirtualMachine
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -97,17 +98,27 @@ public class InfrastructureService {
                 continue;
             }
             virtualMachineData.setDescription(vmDescription);
-            virtualMachineData.setChildren(getApplicationServersData(virtualMachine));
+            virtualMachineData.setChildren(getApplicationServersData(agentConnector, virtualMachine));
             virtualMachinesData.add(virtualMachineData);
         }
         return virtualMachinesData;
     }
 
-    private List<ApplicationServerData> getApplicationServersData(VirtualMachine virtualMachine) {
+    private List<ApplicationServerData> getApplicationServersData(AgentConnector agentConnector, VirtualMachine virtualMachine) throws Exception {
         Collection<ApplicationServer> applicationServers = template.fetch(virtualMachine.getApplicationServers());
         List<ApplicationServerData> applicationServersData = new ArrayList<>();
         for (ApplicationServer applicationServer : applicationServers) {
             ApplicationServerData applicationServerData = new ApplicationServerData();
+
+            List<Application> applications = new ArrayList<>();
+            List<String> appsNames = agentConnector.getApplicationsNames(virtualMachine, applicationServer);
+            Collections.sort(appsNames);
+            for (String appName : appsNames) {
+                Application app = new Application();
+                app.setName(appName);
+                applications.add(app);
+            }
+            applicationServer.setApplications(applications);
             applicationServerData.setNode(applicationServer);
             applicationServersData.add(applicationServerData);
         }

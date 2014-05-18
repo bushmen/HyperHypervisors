@@ -12,6 +12,10 @@ import java.util.Collection;
 @NodeEntity
 public class ApplicationServer extends NamedNode {
 
+    public static enum Type {
+        Tomcat, Jboss6
+    }
+
     @NotNull(message = "{field.nonempty}")
     @Min(value = 1, message = "{port.range}")
     @Max(value = 65535, message = "{port.range}")
@@ -22,6 +26,9 @@ public class ApplicationServer extends NamedNode {
 
     @NotEmpty(message = "{field.nonempty}")
     private String jmxPassword;
+
+    @NotNull(message = "{field.nonempty}")
+    private Type type;
 
     @RelatedTo(type = Relations.DISTRIBUTES)
     private Collection<Application> applications;
@@ -48,6 +55,14 @@ public class ApplicationServer extends NamedNode {
 
     public void setJmxPassword(String jmxPassword) {
         this.jmxPassword = jmxPassword;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public Collection<Application> getApplications() {

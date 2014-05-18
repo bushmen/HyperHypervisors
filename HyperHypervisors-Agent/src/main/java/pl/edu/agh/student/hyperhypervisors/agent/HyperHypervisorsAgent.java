@@ -33,6 +33,9 @@ public class HyperHypervisorsAgent {
         VirtualBoxAgent vboxMbean = new VirtualBoxAgent(VirtualBoxManager.createInstance(null));
         registeredMBeans.add(mBeanServer.registerMBean(vboxMbean, new ObjectName("vbox:type=VirtualBoxAgent")));
 
+        AppServerAgent appServerAgentMBean = new AppServerAgent();
+        registeredMBeans.add(mBeanServer.registerMBean(appServerAgentMBean, new ObjectName("appServer:type=AppServerAgent")));
+
         int port = args.length > 0 ? Integer.parseInt(args[0]) : 9999;
         LocateRegistry.createRegistry(port);
         JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + port + "/server");

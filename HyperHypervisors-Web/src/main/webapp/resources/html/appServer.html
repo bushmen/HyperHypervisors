@@ -5,3 +5,31 @@
         <td><%= node.jmxPort %></td>
     </tr>
 </table>
+
+<div class="panel-body">
+    <a href="infrastructure/appServer/<%= node.id %>/new-port" class="btn btn-primary">Set port</a>
+    <a class="btn btn-danger" onclick="removeNode();">Remove</a>
+</div>
+
+<div class="panel-group" id="apps-accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#apps-accordion" href="#apps-accordion-collapse">
+                    Applications
+                </a>
+            </h4>
+        </div>
+        <div id="apps-accordion-collapse" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table table-condensed table-responsive">
+                    <% _.each(node.applications, function (app) { %>
+                    <tr>
+                        <td><%= app.name %></td>
+                    </tr>
+                    <% }); %>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,14 @@
 package pl.edu.agh.student.hyperhypervisors.web.jmx;
 
+import pl.edu.agh.student.hyperhypervisors.agent.AppServerAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.agent.ServerAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.agent.VirtualBoxAgentMXBean;
 import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ApplicationServer;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Hypervisor;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ServerNode;
+import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.VirtualMachine;
 
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
@@ -13,6 +16,7 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AgentConnector {
@@ -38,7 +42,7 @@ public class AgentConnector {
             @Override
             public List<String> run(MBeanServerConnection mBeanServerConnection) throws Exception {
                 return createMBeanProxy(mBeanServerConnection, "vbox:type=VirtualBoxAgent", VirtualBoxAgentMXBean.class)
-                        .getMachinesNamesList(getVMUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword());
+                        .getMachinesNamesList(getHypervisorUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword());
             }
         });
     }
@@ -48,13 +52,38 @@ public class AgentConnector {
             @Override
             public VirtualMachineDescription run(MBeanServerConnection mBeanServerConnection) throws Exception {
                 return createMBeanProxy(mBeanServerConnection, "vbox:type=VirtualBoxAgent", VirtualBoxAgentMXBean.class)
-                        .getMachineDescription(getVMUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword(), machineName);
+                        .getMachineDescription(getHypervisorUrl(hypervisor), hypervisor.getLogin(), hypervisor.getPassword(), machineName);
             }
         });
     }
 
-    private String getVMUrl(Hypervisor hypervisor) {
+    private String getHypervisorUrl(Hypervisor hypervisor) {
         return "http://" + machine.getIpAddress() + ":" + hypervisor.getPort();
+    }
+
+    public List<String> getApplicationsNames(final VirtualMachine vm, final ApplicationServer server) throws Exception {
+        if (vm.getIpAddress() == null || vm.getIpAddress().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return execute(new MBeanOperation<List<String>>() {
+            @Override
+            public List<String> run(MBeanServerConnection mBeanServerConnection) throws Exception {
+                AppServerAgentMXBean mBeanProxy = createMBeanProxy(mBeanServerConnection, "appServer:type=AppServerAgent", AppServerAgentMXBean.class);
+                String url = getAppServerJmxUrl(vm, server);
+                String login = server.getJmxLogin();
+                String password = server.getJmxPassword();
+                if (server.getType() == ApplicationServer.Type.Tomcat) {
+                    return mBeanProxy.getTomcatAppsNamesList(url, login, password);
+                } else {
+                    return mBeanProxy.getJboss6AppsNamesList(url, login, password);
+                }
+            }
+        });
+    }
+
+    private String getAppServerJmxUrl(VirtualMachine vm, ApplicationServer server) {
+        return "service:jmx:rmi:///jndi/rmi://" + vm.getIpAddress() + ":" + server.getJmxPort() + "/jmxrmi";
     }
 
     private <T> T createMBeanProxy(MBeanServerConnection mBeanServerConnection,

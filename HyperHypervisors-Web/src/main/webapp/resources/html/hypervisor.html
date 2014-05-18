@@ -5,3 +5,8 @@
         <td><%= node.port %></td>
     </tr>
 </table>
+
+<div class="panel-body">
+    <a href="infrastructure/hypervisor/<%= node.id %>/new-port" class="btn btn-primary">Set port</a>
+    <a class="btn btn-danger" onclick="removeNode();">Remove</a>
+</div>

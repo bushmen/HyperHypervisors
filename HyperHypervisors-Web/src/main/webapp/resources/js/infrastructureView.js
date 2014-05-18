@@ -77,9 +77,7 @@ function addChild() {
     if (selected) {
         switch (selected.type) {
             case 'server':
-            case 'hypervisor':
             case 'vm':
-            case 'appServer':
                 window.location.href = 'infrastructure/' + selected.type + '/' + selected.id + '/new-child';
                 break;
         }
