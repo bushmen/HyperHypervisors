@@ -105,6 +105,20 @@ public class InfrastructureController {
         return "redirect:/infrastructure";
     }
 
+    @RequestMapping(value = "/server/{serverId}", method = RequestMethod.GET)
+    public String removeServer(@PathVariable Long serverId, Principal principal) {
+        User user = userRepository.findByLogin(principal.getName());
+        Collection<ServerNode> userServerNodes = template.fetch(user.getServers());
+        ServerNode serverNode = serverNodeRepository.findOne(serverId);
+
+        if (!userServerNodes.contains(serverNode)) {
+            //TODO not allowed
+            return "redirect:/";
+        }
+
+        serverNodeRepository.deleteWithSubtree(serverNode);
+        return "redirect:/infrastructure";
+    }
 
     @RequestMapping(value = "/server/{serverId}/new-child", method = RequestMethod.GET)
     public String createHypervisorView(@ModelAttribute(value = "hypervisor") Hypervisor hypervisor,
@@ -174,6 +188,30 @@ public class InfrastructureController {
 
         hypervisorNode.setPort(hypervisor.getPort());
         hypervisorRepository.save(hypervisorNode);
+        return "redirect:/infrastructure";
+    }
+
+    @RequestMapping(value = "/hypervisor/{hypervisorId}", method = RequestMethod.GET)
+    public String removeHypervisor(@PathVariable Long hypervisorId, Principal principal) {
+        User user = userRepository.findByLogin(principal.getName());
+        Collection<ServerNode> userServerNodes = template.fetch(user.getServers());
+        Hypervisor hypervisorNode = hypervisorRepository.findOne(hypervisorId);
+
+        //TODO can do better
+        boolean allowed = false;
+        for (ServerNode serverNode : userServerNodes) {
+            Collection<Hypervisor> serversHypervisors = template.fetch(serverNode.getHypervisors());
+            if (serversHypervisors.contains(hypervisorNode)) {
+                allowed = true;
+                break;
+            }
+        }
+        if (!allowed) {
+            //TODO not allowed
+            return "redirect:/";
+        }
+
+        hypervisorRepository.deleteWithSubtree(hypervisorNode);
         return "redirect:/infrastructure";
     }
 
@@ -298,6 +336,36 @@ public class InfrastructureController {
 
         appServerNode.setJmxPort(appServer.getPort());
         applicationServerRepository.save(appServerNode);
+        return "redirect:/infrastructure";
+    }
+
+    @RequestMapping(value = "/appServer/{appServerId}", method = RequestMethod.GET)
+    public String removeApplicationServer(@PathVariable Long appServerId, Principal principal) {
+        User user = userRepository.findByLogin(principal.getName());
+        Collection<ServerNode> userServerNodes = template.fetch(user.getServers());
+        ApplicationServer appServerNode = applicationServerRepository.findOne(appServerId);
+
+        //TODO can do better
+        boolean allowed = false;
+        for (ServerNode serverNode : userServerNodes) {
+            Collection<Hypervisor> serversHypervisors = template.fetch(serverNode.getHypervisors());
+            for (Hypervisor hypervisor : serversHypervisors) {
+                Collection<VirtualMachine> hypervisorsVMs = template.fetch(hypervisor.getVirtualMachines());
+                for (VirtualMachine vm : hypervisorsVMs) {
+                    Collection<ApplicationServer> applicationServers = template.fetch(vm.getApplicationServers());
+                    if (applicationServers.contains(appServerNode)) {
+                        allowed = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!allowed) {
+            //TODO not allowed
+            return "redirect:/";
+        }
+
+        applicationServerRepository.deleteWithSubtree(appServerNode);
         return "redirect:/infrastructure";
     }
 }
