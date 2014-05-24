@@ -3,6 +3,7 @@ package pl.edu.agh.student.hyperhypervisors.web.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,6 +50,12 @@ public class MainController {
         User user = userRepository.findByLogin(principal.getName());
         user.setPassword(passwordEncoder.encode(passwordData.getNewPassword()));
         userRepository.save(user);
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/accessDenied", method = {RequestMethod.GET, RequestMethod.POST})
+    public String accessDenied(Model model) {
+        model.addAttribute("accessDenied", true);
         return "redirect:/";
     }
 }

@@ -8,6 +8,13 @@
         <div th:replace="fragments/sidebar :: sidebar"></div>
 
         <div class="col-sm-9">
+            <div th:if="${accessDenied}" class="col-sm-12">
+                <div class="alert alert-danger fade in">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    You are not allowed to perform this operation.
+                </div>
+            </div>
+
             <h3>HyperHypervisors</h3>
         </div>
     </div>
