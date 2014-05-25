@@ -53,9 +53,9 @@ public class MainController {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/accessDenied", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/access-denied")
     public String accessDenied(Model model) {
         model.addAttribute("accessDenied", true);
-        return "redirect:/";
+        return "index";
     }
 }

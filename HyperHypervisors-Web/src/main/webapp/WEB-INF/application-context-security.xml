@@ -23,17 +23,18 @@
                              authentication-success-handler-ref="authSuccessHandler"
                              authentication-failure-url="/auth/login-error"/>
         <security:logout logout-success-url="/auth/login"/>
-        <security:access-denied-handler error-page="/accessDenied"/>
+        <security:access-denied-handler error-page="/access-denied"/>
     </security:http>
 
-    <bean id="authSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+    <bean id="authSuccessHandler"
+          class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
         <property name="defaultTargetUrl" value="/"/>
     </bean>
 
     <security:authentication-manager>
-        <security:authentication-provider user-service-ref="loginUserService">
+        <security:authentication-provider user-service-ref="userService">
             <!--<security:user-service>-->
-                <!--<security:user name="asd" password="asd" authorities="ROLE_USER,ROLE_ADMIN" />-->
+            <!--<security:user name="asd" password="asd" authorities="ROLE_USER,ROLE_ADMIN" />-->
             <!--</security:user-service>-->
             <security:password-encoder ref="passwordEncoder"/>
         </security:authentication-provider>
