@@ -181,7 +181,7 @@ public class HypervisorServiceTests {
         testRemoveVM(new ArrayList<Hypervisor>());
     }
 
-    private void testRemoveVM(ArrayList<Hypervisor> hypervisors) {
+    private void testRemoveVM(List<Hypervisor> hypervisors) {
         getHypervisorPrepare(hypervisors);
 
         hypervisorRepositoryMock.deleteWithSubtree(hypervisorMock);
@@ -234,7 +234,7 @@ public class HypervisorServiceTests {
         assertEquals(virtualMachineMock, vms.get(0));
     }
 
-    public static class HypervisorServiceMock extends HypervisorService {
+    private static class HypervisorServiceMock extends HypervisorService {
 
         private AgentConnector agentConnector;
 
