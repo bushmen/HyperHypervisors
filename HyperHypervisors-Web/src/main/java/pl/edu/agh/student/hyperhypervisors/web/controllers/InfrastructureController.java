@@ -12,7 +12,6 @@ import pl.edu.agh.student.hyperhypervisors.web.dto.ServerData;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ApplicationServer;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Hypervisor;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.ServerNode;
-import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.VirtualMachine;
 import pl.edu.agh.student.hyperhypervisors.web.services.ApplicationServerService;
 import pl.edu.agh.student.hyperhypervisors.web.services.HypervisorService;
 import pl.edu.agh.student.hyperhypervisors.web.services.ServerService;
@@ -139,8 +138,7 @@ public class InfrastructureController {
     @RequestMapping(value = "/vm/{vmId}/new-ip", method = RequestMethod.GET)
     public String setVMIPAddressView(@ModelAttribute(value = "vm") ChangeIpAddressData vm,
                                      @ModelAttribute @PathVariable Long vmId, Principal principal) {
-        VirtualMachine virtualMachine = virtualMachineService.getVirtualMachineIfAllowed(principal.getName(), vmId);
-        hypervisorService.getHypervisorForVirtualMachineIfAllowed(principal.getName(), virtualMachine);
+        virtualMachineService.getVirtualMachineIfAllowed(principal.getName(), vmId);
         return "infrastructure/set-ip";
     }
 
@@ -151,7 +149,7 @@ public class InfrastructureController {
             return "infrastructure/set-ip";
         }
 
-        virtualMachineService.setIPAddress(vm, vmId, principal);
+        virtualMachineService.setIPAddress(vm, vmId, principal.getName());
         return "redirect:/infrastructure";
     }
 

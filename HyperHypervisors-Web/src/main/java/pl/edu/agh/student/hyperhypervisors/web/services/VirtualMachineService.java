@@ -11,7 +11,6 @@ import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.*;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.VirtualMachineRepository;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,9 +43,7 @@ public class VirtualMachineService {
 
         for (String name : vmNames) {
             if (!vmNamesInDb.contains(name)) {
-                VirtualMachine vm = new VirtualMachine();
-                vm.setName(name);
-                VirtualMachine savedVM = virtualMachineRepository.save(vm);
+                VirtualMachine savedVM = createVirtualMachine(name);
                 hypervisor.getVirtualMachines().add(savedVM);
             }
         }
@@ -64,7 +61,6 @@ public class VirtualMachineService {
 
             VirtualMachineDescription vmDescription = agentConnector.getVirtualMachineDescription(hypervisor, virtualMachine.getName());
             if (vmDescription.getName() == null) {
-                hypervisor.getVirtualMachines().remove(virtualMachine);
                 virtualMachineRepository.deleteWithSubtree(virtualMachine);
                 continue;
             }
@@ -104,9 +100,9 @@ public class VirtualMachineService {
         return virtualMachine;
     }
 
-    public void setIPAddress(ChangeIpAddressData vmData, Long vmId, Principal principal) {
-        VirtualMachine virtualMachine = getVirtualMachineIfAllowed(principal.getName(), vmId);
-        Hypervisor vmHypervisor = hypervisorService.getHypervisorForVirtualMachineIfAllowed(principal.getName(), virtualMachine);
+    public void setIPAddress(ChangeIpAddressData vmData, Long vmId, String userName) {
+        VirtualMachine virtualMachine = getVirtualMachineIfAllowed(userName, vmId);
+        Hypervisor vmHypervisor = hypervisorService.getHypervisorForVirtualMachineIfAllowed(userName, virtualMachine);
         virtualMachine.setIpAddress(vmData.getIpAddress());
         VirtualMachine savedVirtualMachine = virtualMachineRepository.save(virtualMachine);
         hypervisorService.addVirtualMachine(vmHypervisor, savedVirtualMachine);

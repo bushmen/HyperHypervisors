@@ -38,11 +38,14 @@ public abstract class NamedNode {
         }
 
         NamedNode namedNode = (NamedNode) o;
-        return (id == null && namedNode.id == null) || (id != null && id.equals(namedNode.id));
+        Long id = getId();
+        Long otherId = namedNode.getId();
+        return (id == null && otherId == null) || (id != null && id.equals(otherId));
     }
 
     @Override
     public int hashCode() {
+        Long id = getId();
         return id == null ? 0 : id.hashCode();
     }
 }

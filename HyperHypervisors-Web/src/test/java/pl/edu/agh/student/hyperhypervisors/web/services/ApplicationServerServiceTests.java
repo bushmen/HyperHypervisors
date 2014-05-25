@@ -157,7 +157,7 @@ public class ApplicationServerServiceTests {
         testRemoveAppServer(new ArrayList<ApplicationServer>());
     }
 
-    private void testRemoveAppServer(ArrayList<ApplicationServer> appServers) {
+    private void testRemoveAppServer(List<ApplicationServer> appServers) {
         getAppServerPrepare(appServers);
 
         applicationServerRepositoryMock.deleteWithSubtree(applicationServerMock);
@@ -172,7 +172,7 @@ public class ApplicationServerServiceTests {
                 applicationServerRepositoryMock, userMock, serverMock, hypervisorMock);
     }
 
-    private void getAppServerPrepare(ArrayList<ApplicationServer> appServers) {
+    private void getAppServerPrepare(List<ApplicationServer> appServers) {
         List<ServerNode> servers = Lists.newArrayList(serverMock);
         List<Hypervisor> hypervisors = Lists.newArrayList(hypervisorMock);
         List<VirtualMachine> vms = Lists.newArrayList(virtualMachineMock);
