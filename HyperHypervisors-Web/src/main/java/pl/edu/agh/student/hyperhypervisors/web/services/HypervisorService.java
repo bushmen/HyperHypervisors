@@ -47,15 +47,16 @@ public class HypervisorService {
         return hypervisorsData;
     }
 
-    public void createHypervisor(Hypervisor hypervisor, ServerNode serverNode) throws Exception {
+    public Hypervisor createHypervisor(Hypervisor hypervisor, ServerNode serverNode) throws Exception {
         Hypervisor savedHypervisor = hypervisorRepository.save(hypervisor);
-        List<String> vmNames = new AgentConnector(serverNode).getVirtualMachinesNames(hypervisor);
+        List<String> vmNames = createAgentConnector(serverNode).getVirtualMachinesNames(hypervisor);
         for (String vmName : vmNames) {
             VirtualMachine savedVM = virtualMachineService.createVirtualMachine(vmName);
             savedHypervisor.getVirtualMachines().add(savedVM);
         }
         savedHypervisor = hypervisorRepository.save(savedHypervisor);
         serverService.addHypervisor(serverNode, savedHypervisor);
+        return savedHypervisor;
     }
 
     public Hypervisor getHypervisorIfAllowed(String userName, Long hypervisorId) {
@@ -114,5 +115,9 @@ public class HypervisorService {
     public void addVirtualMachine(Hypervisor hypervisor, VirtualMachine virtualMachine) {
         hypervisor.getVirtualMachines().add(virtualMachine);
         hypervisorRepository.save(hypervisor);
+    }
+
+    protected AgentConnector createAgentConnector(ServerNode serverNode) {
+        return new AgentConnector(serverNode);
     }
 }

@@ -30,12 +30,12 @@ public class ApplicationServerServiceTests {
     private ApplicationServerRepository applicationServerRepositoryMock;
     private UserService userServiceMock;
     private VirtualMachineService virtualMachineServiceMock;
-    private ApplicationServerService testInstance;
     private VirtualMachine virtualMachineMock;
     private ApplicationServer applicationServerMock;
     private User userMock;
     private ServerNode serverMock;
     private Hypervisor hypervisorMock;
+    private ApplicationServerService testInstance;
 
     @Before
     public void setUp() throws Exception {
