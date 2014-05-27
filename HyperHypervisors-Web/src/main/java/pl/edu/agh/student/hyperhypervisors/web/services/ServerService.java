@@ -67,7 +67,7 @@ public class ServerService {
         return serverNode;
     }
 
-    public void serIPAndPort(ChangeIpAndPortData server, Long serverId, String userName) {
+    public void setIPAndPort(ChangeIpAndPortData server, Long serverId, String userName) {
         ServerNode serverNode = getServerNodeIfAllowed(userName, serverId);
         serverNode.setIpAddress(server.getIpAddress());
         serverNode.setAgentPort(server.getPort());

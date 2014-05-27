@@ -81,7 +81,7 @@ public class InfrastructureController {
             return "infrastructure/set-ip-and-port";
         }
 
-        serverService.serIPAndPort(server, serverId, principal.getName());
+        serverService.setIPAndPort(server, serverId, principal.getName());
         return "redirect:/infrastructure";
     }
 
