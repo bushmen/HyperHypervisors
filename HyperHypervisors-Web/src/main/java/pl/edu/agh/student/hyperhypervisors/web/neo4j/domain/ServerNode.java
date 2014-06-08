@@ -70,4 +70,15 @@ public class ServerNode extends NamedNode {
     public void setHypervisors(Collection<Hypervisor> hypervisors) {
         this.hypervisors = hypervisors;
     }
+
+    @Override
+    public String toString() {
+        return "Server("
+                + "name=" + getName() + ", "
+                + "ipAddress=" + ipAddress + ", "
+                + "agentPort=" + agentPort + ", "
+                + "agentLogin=" + agentLogin + ", "
+                + "agentPassword=" + agentPassword + ", "
+                + "hypervisors=" + hypervisors + ")";
+    }
 }

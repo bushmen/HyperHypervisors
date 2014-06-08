@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.student.hyperhypervisors.web.dto.ChangePortData;
+import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeLoginAndPassword;
 import pl.edu.agh.student.hyperhypervisors.web.dto.HypervisorData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Hypervisor;
@@ -37,6 +37,36 @@ public class HypervisorService {
 
     public List<HypervisorData> getHypervisorsData(AgentConnector agentConnector, ServerNode serverNode) throws Exception {
         Collection<Hypervisor> hypervisors = template.fetch(serverNode.getHypervisors());
+        List<Hypervisor> runningHypervisors = agentConnector.getHypervisors();
+        List<Integer> hypervisorsPortsInDb = new ArrayList<>();
+        for(Hypervisor hypervisor: hypervisors) {
+            hypervisorsPortsInDb.add(hypervisor.getPort());
+        }
+
+        for (Hypervisor hypervisor: runningHypervisors) {
+            if (!hypervisorsPortsInDb.contains(hypervisor.getPort())) {
+                createHypervisor(hypervisor, serverNode);
+            }
+        }
+        hypervisors = template.fetch(serverNode.getHypervisors());
+
+        List<Integer> runningHypervisorsPorts = new ArrayList<>();
+        for (Hypervisor runningHypervisor : runningHypervisors) {
+            runningHypervisorsPorts.add(runningHypervisor.getPort());
+        }
+
+        for (Hypervisor hypervisor : hypervisors) {
+            if(!runningHypervisorsPorts.contains(hypervisor.getPort())) {
+                hypervisorRepository.deleteWithSubtree(hypervisor);
+            }
+        }
+
+        hypervisors = template.fetch(serverNode.getHypervisors());
+        return getHypervisorsData(agentConnector, hypervisors);
+    }
+
+    private List<HypervisorData> getHypervisorsData(AgentConnector agentConnector,
+                                                    Collection<Hypervisor> hypervisors) throws Exception {
         List<HypervisorData> hypervisorsData = new ArrayList<>();
         for (Hypervisor hypervisor : hypervisors) {
             HypervisorData hypervisorData = new HypervisorData();
@@ -49,13 +79,17 @@ public class HypervisorService {
 
     public Hypervisor createHypervisor(Hypervisor hypervisor, ServerNode serverNode) throws Exception {
         Hypervisor savedHypervisor = hypervisorRepository.save(hypervisor);
-        List<String> vmNames = createAgentConnector(serverNode).getVirtualMachinesNames(hypervisor);
-        for (String vmName : vmNames) {
-            VirtualMachine savedVM = virtualMachineService.createVirtualMachine(vmName);
-            savedHypervisor.getVirtualMachines().add(savedVM);
-        }
-        savedHypervisor = hypervisorRepository.save(savedHypervisor);
         serverService.addHypervisor(serverNode, savedHypervisor);
+
+        List<String> vmNames = createAgentConnector(serverNode).getVirtualMachinesNames(hypervisor);
+        if(vmNames != null) {
+            for (String vmName : vmNames) {
+                VirtualMachine savedVM = virtualMachineService.createVirtualMachine(vmName);
+                savedHypervisor.getVirtualMachines().add(savedVM);
+            }
+            savedHypervisor = hypervisorRepository.save(savedHypervisor);
+        }
+
         return savedHypervisor;
     }
 
@@ -101,15 +135,11 @@ public class HypervisorService {
         return vmsHypervisor;
     }
 
-    public void setPort(ChangePortData hypervisor, Long hypervisorId, String userName) {
-        Hypervisor hypervisorNode = getHypervisorIfAllowed(userName, hypervisorId);
-        hypervisorNode.setPort(hypervisor.getPort());
+    public void setLoginAndPassword(ChangeLoginAndPassword hypervisor, Long hypervisorId, String name) {
+        Hypervisor hypervisorNode = getHypervisorIfAllowed(name, hypervisorId);
+        hypervisorNode.setLogin(hypervisor.getLogin());
+        hypervisorNode.setPassword(hypervisor.getPassword());
         hypervisorRepository.save(hypervisorNode);
-    }
-
-    public void removeHypervisor(Long hypervisorId, String userName) {
-        Hypervisor hypervisorNode = getHypervisorIfAllowed(userName, hypervisorId);
-        hypervisorRepository.deleteWithSubtree(hypervisorNode);
     }
 
     public void addVirtualMachine(Hypervisor hypervisor, VirtualMachine virtualMachine) {

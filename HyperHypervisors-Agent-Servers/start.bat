@@ -1,0 +1,1 @@
+java -Djava.library.path="sigar\lib" -jar HyperHypervisors-Agent-Servers.jar 127.0.0.1 9999

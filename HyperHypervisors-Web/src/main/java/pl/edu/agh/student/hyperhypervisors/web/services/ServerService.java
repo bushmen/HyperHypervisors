@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.student.hyperhypervisors.model.ServerDescription;
+import pl.edu.agh.student.hyperhypervisors.dto.ServerDescription;
 import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAndPortData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.ServerData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
@@ -49,11 +49,19 @@ public class ServerService {
         return data;
     }
 
-    public ServerNode createServer(ServerNode server, String userName) {
+    public ServerNode createServer(ServerNode server, String userName) throws Exception {
         ServerNode savedServerNode = serverNodeRepository.save(server);
         User user = userService.findByLogin(userName);
         userService.addServer(user, server);
+        addHypervisors(savedServerNode);
         return savedServerNode;
+    }
+
+    private void addHypervisors(ServerNode serverNode) throws Exception {
+        List<Hypervisor> hypervisors = createAgentConnector(serverNode).getHypervisors();
+        for (Hypervisor hypervisor: hypervisors) {
+            hypervisorService.createHypervisor(hypervisor, serverNode);
+        }
     }
 
     public ServerNode getServerNodeIfAllowed(String userName, Long serverId) {

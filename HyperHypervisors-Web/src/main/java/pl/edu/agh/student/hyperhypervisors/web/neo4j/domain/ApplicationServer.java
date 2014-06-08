@@ -1,8 +1,8 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import pl.edu.agh.student.hyperhypervisors.dto.infrastructure.AppServerType;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -12,23 +12,16 @@ import java.util.Collection;
 @NodeEntity
 public class ApplicationServer extends NamedNode {
 
-    public static enum Type {
-        Tomcat, Jboss6
-    }
-
     @NotNull(message = "{field.nonempty}")
     @Min(value = 1, message = "{port.range}")
     @Max(value = 65535, message = "{port.range}")
     private int jmxPort;
 
-    @NotEmpty(message = "{field.nonempty}")
     private String jmxLogin;
-
-    @NotEmpty(message = "{field.nonempty}")
     private String jmxPassword;
 
     @NotNull(message = "{field.nonempty}")
-    private Type type;
+    private AppServerType type;
 
     @RelatedTo(type = Relations.DISTRIBUTES)
     private Collection<Application> applications;
@@ -57,11 +50,11 @@ public class ApplicationServer extends NamedNode {
         this.jmxPassword = jmxPassword;
     }
 
-    public Type getType() {
+    public AppServerType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(AppServerType type) {
         this.type = type;
     }
 
@@ -71,5 +64,15 @@ public class ApplicationServer extends NamedNode {
 
     public void setApplications(Collection<Application> applications) {
         this.applications = applications;
+    }
+
+    @Override
+    public String toString() {
+        return "AppServer("
+                + "name=" + getName() + ", "
+                + "jmxPort=" + jmxPort + ", "
+                + "jmxLogin=" + jmxLogin + ", "
+                + "jmxPassword=" + jmxPassword + ", "
+                + "type=" + type + ")";
     }
 }

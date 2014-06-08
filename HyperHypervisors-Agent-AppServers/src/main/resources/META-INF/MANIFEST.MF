@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Built-By: artur
+Build-Jdk: 1.7.0_60
+Premain-Class: pl.edu.agh.student.hyperhypervisors.agent.HyperHypervisorsAgentAppServers

@@ -5,6 +5,10 @@
         <td><%= node.ipAddress %></td>
     </tr>
     <tr>
+        <td>Agent port</td>
+        <td><%= node.agentPort %></td>
+    </tr>
+    <tr>
         <td>Operating system</td>
         <td><%= description.operationSystem %></td>
     </tr>
@@ -19,8 +23,7 @@
 </table>
 
 <div class="panel-body">
-    <a href="infrastructure/vm/<%= node.id %>/new-ip" class="btn btn-primary">Set IP address</a>
-    <a class="btn btn-warning" onclick="addChild();">Add application server</a>
+    <a href="infrastructure/vm/<%= node.id %>/new-ip-and-port" class="btn btn-primary">Set IP and port</a>
 </div>
 
 <div class="panel-group" id="disks-accordion">

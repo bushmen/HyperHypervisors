@@ -1,6 +1,5 @@
 package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
@@ -17,10 +16,7 @@ public class Hypervisor extends NamedNode {
     @Max(value = 65536, message = "{port.range}")
     private int port;
 
-    @NotEmpty(message = "{field.nonempty}")
     private String login;
-
-    @NotEmpty(message = "{field.nonempty}")
     private String password;
 
     @RelatedTo(type = Relations.HYPERVISES)
@@ -56,5 +52,14 @@ public class Hypervisor extends NamedNode {
 
     public void setVirtualMachines(Collection<VirtualMachine> virtualMachines) {
         this.virtualMachines = virtualMachines;
+    }
+
+    @Override
+    public String toString() {
+        return "Hypervisor("
+                + "name=" + getName() + ", "
+                + "port=" + port + ", "
+                + "login=" + login + ", "
+                + "password=" + password + ")";
     }
 }

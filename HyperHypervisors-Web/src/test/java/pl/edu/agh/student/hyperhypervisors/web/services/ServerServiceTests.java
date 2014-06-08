@@ -82,11 +82,12 @@ public class ServerServiceTests {
         expect(userServiceMock.findByLogin(USER_NAME)).andReturn(userMock);
         userServiceMock.addServer(userMock, serverMock);
         expectLastCall();
+        expect(agentConnectorMock.getHypervisors()).andReturn(new ArrayList<Hypervisor>());
 
-        replay(serverRepositoryMock, serverMock, userServiceMock, userMock);
+        replay(serverRepositoryMock, serverMock, userServiceMock, userMock, agentConnectorMock);
 
         ServerNode server = testInstance.createServer(serverMock, USER_NAME);
-        verify(serverRepositoryMock, serverMock, userServiceMock, userMock);
+        verify(serverRepositoryMock, serverMock, userServiceMock, userMock, agentConnectorMock);
 
         assertEquals(serverMock, server);
     }

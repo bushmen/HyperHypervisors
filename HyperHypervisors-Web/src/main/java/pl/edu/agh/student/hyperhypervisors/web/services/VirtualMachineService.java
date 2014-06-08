@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
-import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAddressData;
+import pl.edu.agh.student.hyperhypervisors.dto.VirtualMachineDescription;
+import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAndPortData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.VirtualMachineData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.*;
@@ -41,10 +41,11 @@ public class VirtualMachineService {
             vmNamesInDb.add(virtualMachine.getName());
         }
 
-        for (String name : vmNames) {
-            if (!vmNamesInDb.contains(name)) {
-                VirtualMachine savedVM = createVirtualMachine(name);
-                hypervisor.getVirtualMachines().add(savedVM);
+        if(vmNames != null) {
+            for (String name : vmNames) {
+                if (!vmNamesInDb.contains(name)) {
+                    hypervisorService.addVirtualMachine(hypervisor, createVirtualMachine(name));
+                }
             }
         }
 
@@ -60,6 +61,10 @@ public class VirtualMachineService {
             virtualMachineData.setNode(virtualMachine);
 
             VirtualMachineDescription vmDescription = agentConnector.getVirtualMachineDescription(hypervisor, virtualMachine.getName());
+            if(vmDescription == null) {
+                continue;
+            }
+
             if (vmDescription.getName() == null) {
                 virtualMachineRepository.deleteWithSubtree(virtualMachine);
                 continue;
@@ -75,6 +80,10 @@ public class VirtualMachineService {
         VirtualMachine vm = new VirtualMachine();
         vm.setName(vmName);
         return virtualMachineRepository.save(vm);
+    }
+
+    public VirtualMachine getVirtualMachine(Long vmId) {
+        return virtualMachineRepository.findOne(vmId);
     }
 
     public VirtualMachine getVirtualMachineIfAllowed(String userName, Long vmId) {
@@ -100,10 +109,11 @@ public class VirtualMachineService {
         return virtualMachine;
     }
 
-    public void setIPAddress(ChangeIpAddressData vmData, Long vmId, String userName) {
+    public void setIPAddressAndPort(ChangeIpAndPortData vmData, Long vmId, String userName) {
         VirtualMachine virtualMachine = getVirtualMachineIfAllowed(userName, vmId);
         Hypervisor vmHypervisor = hypervisorService.getHypervisorForVirtualMachineIfAllowed(userName, virtualMachine);
         virtualMachine.setIpAddress(vmData.getIpAddress());
+        virtualMachine.setAgentPort(vmData.getPort());
         VirtualMachine savedVirtualMachine = virtualMachineRepository.save(virtualMachine);
         hypervisorService.addVirtualMachine(vmHypervisor, savedVirtualMachine);
     }

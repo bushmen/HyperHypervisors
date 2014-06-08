@@ -32,10 +32,12 @@
     </bean>
 
     <security:authentication-manager>
+        <!--<security:authentication-provider>
+            <security:user-service>
+                <security:user name="asd" password="asd" authorities="ROLE_USER,ROLE_ADMIN" />
+            </security:user-service>
+        </security:authentication-provider>-->
         <security:authentication-provider user-service-ref="userService">
-            <!--<security:user-service>-->
-            <!--<security:user name="asd" password="asd" authorities="ROLE_USER,ROLE_ADMIN" />-->
-            <!--</security:user-service>-->
             <security:password-encoder ref="passwordEncoder"/>
         </security:authentication-provider>
     </security:authentication-manager>

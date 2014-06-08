@@ -6,8 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.security.access.AccessDeniedException;
-import pl.edu.agh.student.hyperhypervisors.model.VirtualMachineDescription;
-import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAddressData;
+import pl.edu.agh.student.hyperhypervisors.dto.VirtualMachineDescription;
+import pl.edu.agh.student.hyperhypervisors.web.dto.ChangeIpAndPortData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.VirtualMachineData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.*;
@@ -27,6 +27,7 @@ public class VirtualMachineServiceTests {
     private static final Long ID = 1L;
     private static final Long ID2 = 2L;
     private static final String IP = "1.1.1.1";
+    private static final int PORT = 1234;
 
     private VirtualMachineRepository virtualMachineRepositoryMock;
     private UserService userServiceMock;
@@ -71,25 +72,19 @@ public class VirtualMachineServiceTests {
 
         List<VirtualMachine> vms = Lists.newArrayList(virtualMachineMock);
 
-        expect(hypervisorMock.getVirtualMachines()).andReturn(vms).times(3);
+        expect(hypervisorMock.getVirtualMachines()).andReturn(vms).times(2);
         expect(agentConnectorMock.getVirtualMachinesNames(hypervisorMock)).andReturn(Lists.newArrayList(NAME2));
         expect(templateMock.fetch(vms)).andReturn(vms).times(2);
 
         expect(virtualMachineMock.getId()).andReturn(ID);
         expect(virtualMachineMock.getName()).andReturn(NAME).times(3);
-        expect(secondVMMock.getId()).andReturn(ID2);
-        expect(secondVMMock.getName()).andReturn(NAME2).times(2);
 
         expect(agentConnectorMock.getVirtualMachineDescription(hypervisorMock, NAME)).andReturn(vmDescription1Mock);
-        expect(agentConnectorMock.getVirtualMachineDescription(hypervisorMock, NAME2)).andReturn(vmDescription2Mock);
         expect(vmDescription1Mock.getName()).andReturn(null);
-        expect(vmDescription2Mock.getName()).andReturn(NAME2);
 
         expect(virtualMachineRepositoryMock.save(EasyMock.<VirtualMachine>anyObject())).andReturn(secondVMMock);
         virtualMachineRepositoryMock.deleteWithSubtree(virtualMachineMock);
         expectLastCall();
-
-        expect(applicationServerServiceMock.getApplicationServersData(agentConnectorMock, secondVMMock)).andReturn(null);
 
         replay(virtualMachineMock, virtualMachineRepositoryMock, hypervisorMock, templateMock,
                 agentConnectorMock, applicationServerServiceMock, secondVMMock, vmDescription1Mock, vmDescription2Mock);
@@ -98,8 +93,7 @@ public class VirtualMachineServiceTests {
         verify(virtualMachineMock, virtualMachineRepositoryMock, hypervisorMock, templateMock,
                 agentConnectorMock, applicationServerServiceMock, secondVMMock, vmDescription1Mock, vmDescription2Mock);
 
-        assertEquals(1, vmsData.size());
-        assertEquals(secondVMMock, vmsData.get(0).getNode());
+        assertEquals(0, vmsData.size());
     }
 
     @Test
@@ -139,23 +133,26 @@ public class VirtualMachineServiceTests {
     }
 
     @Test
-    public void testSetIPIfAllowed() throws Exception {
-        testSetIP(Lists.newArrayList(virtualMachineMock));
+    public void testSetIPAndPortIfAllowed() throws Exception {
+        testSetIPAndPort(Lists.newArrayList(virtualMachineMock));
     }
 
     @Test(expected = AccessDeniedException.class)
-    public void testSetIPtIfNotAllowed() throws Exception {
-        testSetIP(new ArrayList<VirtualMachine>());
+    public void testSetIPAndPortIfNotAllowed() throws Exception {
+        testSetIPAndPort(new ArrayList<VirtualMachine>());
     }
 
-    private void testSetIP(ArrayList<VirtualMachine> vms) {
+    private void testSetIPAndPort(ArrayList<VirtualMachine> vms) {
         getVMPrepare(vms);
 
-        ChangeIpAddressData changeIpAddressData = createMock(ChangeIpAddressData.class);
+        ChangeIpAndPortData changeIpAddressData = createMock(ChangeIpAndPortData.class);
         expect(hypervisorServiceMock.getHypervisorForVirtualMachineIfAllowed(USER_NAME, virtualMachineMock))
                 .andReturn(hypervisorMock);
         expect(changeIpAddressData.getIpAddress()).andReturn(IP);
+        expect(changeIpAddressData.getPort()).andReturn(PORT);
         virtualMachineMock.setIpAddress(IP);
+        expectLastCall();
+        virtualMachineMock.setAgentPort(PORT);
         expectLastCall();
         expect(virtualMachineRepositoryMock.save(virtualMachineMock)).andReturn(virtualMachineMock);
         hypervisorServiceMock.addVirtualMachine(hypervisorMock, virtualMachineMock);
@@ -164,7 +161,7 @@ public class VirtualMachineServiceTests {
         replay(virtualMachineMock, userServiceMock, templateMock, virtualMachineRepositoryMock,
                 userMock, serverMock, hypervisorServiceMock, hypervisorMock, changeIpAddressData);
 
-        testInstance.setIPAddress(changeIpAddressData, ID, USER_NAME);
+        testInstance.setIPAddressAndPort(changeIpAddressData, ID, USER_NAME);
 
         verify(virtualMachineMock, userServiceMock, templateMock, virtualMachineRepositoryMock,
                 userMock, serverMock, hypervisorServiceMock, hypervisorMock, changeIpAddressData);

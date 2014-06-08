@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.security.access.AccessDeniedException;
-import pl.edu.agh.student.hyperhypervisors.web.dto.ChangePortData;
 import pl.edu.agh.student.hyperhypervisors.web.dto.HypervisorData;
 import pl.edu.agh.student.hyperhypervisors.web.jmx.AgentConnector;
 import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.Hypervisor;
@@ -64,8 +63,11 @@ public class HypervisorServiceTests {
     public void testGetHypervisorsData() throws Exception {
         List<Hypervisor> hypervisors = Lists.newArrayList(hypervisorMock);
 
-        expect(serverMock.getHypervisors()).andReturn(hypervisors);
-        expect(templateMock.fetch(hypervisors)).andReturn(hypervisors);
+        expect(serverMock.getHypervisors()).andReturn(hypervisors).times(3);
+        expect(templateMock.fetch(hypervisors)).andReturn(hypervisors).times(3);
+        expect(agentConnectorMock.getHypervisors()).andReturn(hypervisors);
+        expect(hypervisorMock.getPort()).andReturn(PORT).times(4);
+
         expect(virtualMachineServiceMock.getVirtualMachinesData(agentConnectorMock, hypervisorMock)).andReturn(null);
         expect(hypervisorMock.getId()).andReturn(ID);
         expect(hypervisorMock.getName()).andReturn(NAME);
@@ -100,28 +102,6 @@ public class HypervisorServiceTests {
     }
 
     @Test
-    public void testGetHypervisorWhenAllowed() throws Exception {
-        Hypervisor hypervisor = testGetHypervisor(Lists.newArrayList(hypervisorMock));
-        assertEquals(hypervisorMock, hypervisor);
-    }
-
-    @Test(expected = AccessDeniedException.class)
-    public void testGetHypervisorWhenNotAllowed() throws Exception {
-        testGetHypervisor(new ArrayList<Hypervisor>());
-    }
-
-    private Hypervisor testGetHypervisor(List<Hypervisor> hypervisors) {
-        getHypervisorPrepare(hypervisors);
-
-        replay(serverMock, userServiceMock, userMock, templateMock, hypervisorRepositoryMock, hypervisorMock);
-
-        Hypervisor hypervisor = testInstance.getHypervisorIfAllowed(USER_NAME, ID);
-
-        verify(serverMock, userServiceMock, userMock, templateMock, hypervisorRepositoryMock, hypervisorMock);
-        return hypervisor;
-    }
-
-    @Test
     public void testGetHypervisorForVMWhenAllowed() throws Exception {
         Hypervisor hypervisor = testGetHypervisorForVM(Lists.newArrayList(virtualMachineMock));
         assertEquals(hypervisorMock, hypervisor);
@@ -141,68 +121,6 @@ public class HypervisorServiceTests {
 
         verify(serverMock, userServiceMock, userMock, templateMock, hypervisorRepositoryMock, hypervisorMock);
         return hypervisor;
-    }
-
-    @Test
-    public void testSetPortIfAllowed() throws Exception {
-        testSetPort(Lists.newArrayList(hypervisorMock));
-    }
-
-    @Test(expected = AccessDeniedException.class)
-    public void testSetPortIfNotAllowed() throws Exception {
-        testSetPort(new ArrayList<Hypervisor>());
-    }
-
-    private void testSetPort(ArrayList<Hypervisor> hypervisors) {
-        getHypervisorPrepare(hypervisors);
-
-        ChangePortData changePortDataMock = createMock(ChangePortData.class);
-        expect(changePortDataMock.getPort()).andReturn(PORT);
-        hypervisorMock.setPort(PORT);
-        expectLastCall();
-        expect(hypervisorRepositoryMock.save(hypervisorMock)).andReturn(hypervisorMock);
-
-        replay(serverMock, userServiceMock, userMock, templateMock,
-                hypervisorRepositoryMock, hypervisorMock, changePortDataMock);
-
-        testInstance.setPort(changePortDataMock, ID, USER_NAME);
-
-        verify(serverMock, userServiceMock, userMock, templateMock,
-                hypervisorRepositoryMock, hypervisorMock, changePortDataMock);
-    }
-
-    @Test
-    public void testRemoveVMIfAllowed() throws Exception {
-        testRemoveVM(Lists.newArrayList(hypervisorMock));
-    }
-
-    @Test(expected = AccessDeniedException.class)
-    public void testRemoveVMIfNotAllowed() throws Exception {
-        testRemoveVM(new ArrayList<Hypervisor>());
-    }
-
-    private void testRemoveVM(List<Hypervisor> hypervisors) {
-        getHypervisorPrepare(hypervisors);
-
-        hypervisorRepositoryMock.deleteWithSubtree(hypervisorMock);
-        expectLastCall();
-
-        replay(serverMock, userServiceMock, userMock, templateMock, hypervisorRepositoryMock, hypervisorMock);
-
-        testInstance.removeHypervisor(ID, USER_NAME);
-
-        verify(serverMock, userServiceMock, userMock, templateMock, hypervisorRepositoryMock, hypervisorMock);
-    }
-
-    private void getHypervisorPrepare(List<Hypervisor> hypervisors) {
-        List<ServerNode> servers = Lists.newArrayList(serverMock);
-
-        expect(userServiceMock.findByLogin(USER_NAME)).andReturn(userMock);
-        expect(userMock.getServers()).andReturn(servers);
-        expect(templateMock.fetch(servers)).andReturn(servers);
-        expect(hypervisorRepositoryMock.findOne(ID)).andReturn(hypervisorMock);
-        expect(serverMock.getHypervisors()).andReturn(hypervisors);
-        expect(templateMock.fetch(hypervisors)).andReturn(hypervisors);
     }
 
     private void getHypervisorForVMPrepare(List<VirtualMachine> vms) {

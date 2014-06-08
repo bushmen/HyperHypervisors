@@ -10,14 +10,15 @@
     <name>${project.artifactId}</name>
     <description>
         This project can be used to monitor virtualized infrastructure of machines with running applications.
-        Currently, the only supported hipervisor is Oracle VirtualBox version 4.3 and application servers: Apache Tomcat
-        7.x and Jboss EAP 6.1.
+        Currently, the only supported hipervisor is Oracle VirtualBox version 4.3 and Apache Tomcat 7.x.
     </description>
 
     <modules>
         <module>HyperHypervisors-Web</module>
-        <module>HyperHypervisors-Agent</module>
-        <module>HyperHypervisors-AgentClient</module>
+        <module>HyperHypervisors-Agent-Client</module>
+        <module>HyperHypervisors-Agent-Servers</module>
+        <module>HyperHypervisors-Agent-VMs</module>
+        <module>HyperHypervisors-Agent-AppServers</module>
     </modules>
 
     <properties>
@@ -79,6 +80,10 @@
                         <source>1.7</source>
                         <target>1.7</target>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.7</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -260,7 +265,6 @@
                     <aggregate>true</aggregate>
                 </configuration>
             </plugin>
-
         </plugins>
     </reporting>
 

@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>pl.edu.agh.student</groupId>
+        <artifactId>HyperHypervisors</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>HyperHypervisors-Agent-Servers</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        This standalone application is daemon providing JMX MBeans used to obtain information about condition of
+        monitored infrastructure and Hypervisors running on the Server from which this daemon is running.
+    </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sigar.version>1.6.5.132</sigar.version>
+        <spring.version>3.2.8.RELEASE</spring.version>
+        <jackson.version>1.9.7</jackson.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>pl.edu.agh.student</groupId>
+            <artifactId>HyperHypervisors-Agent-Client</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hyperic</groupId>
+            <artifactId>sigar</artifactId>
+            <version>${sigar.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.virtualbox</groupId>
+            <artifactId>vboxjws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>pl.edu.agh.student.hyperhypervisors.agent.HyperHypervisorsServersAgent</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-to-dist</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+                                      tofile="../dist/server-agent/${project.artifactId}.jar"/>
+                                <copy todir="../dist/server-agent/sigar/">
+                                    <fileset dir="./sigar" includes="**"/>
+                                </copy>
+                                <copy todir="../dist/server-agent/">
+                                    <fileset dir="${project.basedir}" includes="*.sh"/>
+                                    <fileset dir="${project.basedir}" includes="*.bat"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

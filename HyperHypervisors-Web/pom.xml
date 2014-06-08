@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>pl.edu.agh.student</groupId>
-            <artifactId>HyperHypervisors-AgentClient</artifactId>
+            <artifactId>HyperHypervisors-Agent-Client</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

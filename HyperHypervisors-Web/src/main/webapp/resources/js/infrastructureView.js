@@ -72,27 +72,11 @@ $(document).ready(function () {
     });
 });
 
-function addChild() {
-    var selected = $.jstree.reference('#servers-tree').get_selected(true)[0];
-    if (selected) {
-        switch (selected.type) {
-            case 'server':
-            case 'vm':
-                window.location.href = 'infrastructure/' + selected.type + '/' + selected.id + '/new-child';
-                break;
-        }
-    }
-
-    return false;
-}
-
 function removeNode() {
     var selected = $.jstree.reference('#servers-tree').get_selected(true)[0];
     if (selected) {
         switch (selected.type) {
             case 'server':
-            case 'hypervisor':
-            case 'appServer':
                 window.location.href = 'infrastructure/' + selected.type + '/' + selected.id;
                 break;
         }
