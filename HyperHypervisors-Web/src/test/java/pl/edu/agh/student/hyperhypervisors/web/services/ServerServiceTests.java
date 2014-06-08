@@ -138,7 +138,7 @@ public class ServerServiceTests {
 
         replay(userServiceMock, userMock, templateMock, changeIpAndPortData, serverMock, serverRepositoryMock);
 
-        testInstance.serIPAndPort(changeIpAndPortData, ID, USER_NAME);
+        testInstance.setIPAndPort(changeIpAndPortData, ID, USER_NAME);
 
         verify(userServiceMock, userMock, templateMock, changeIpAndPortData, serverMock, serverRepositoryMock);
     }

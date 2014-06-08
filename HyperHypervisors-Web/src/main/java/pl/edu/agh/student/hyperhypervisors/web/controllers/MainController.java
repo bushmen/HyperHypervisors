@@ -36,8 +36,8 @@ public class MainController {
     }
 
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
-    public String changePasswordView(@Valid @ModelAttribute(value = "passwordData") ChangePasswordData passwordData,
-                                     BindingResult result, Principal principal) {
+    public String changePassword(@Valid @ModelAttribute(value = "passwordData") ChangePasswordData passwordData,
+                                 BindingResult result, Principal principal) {
         if (result.hasErrors()) {
             return "changePassword";
         }
