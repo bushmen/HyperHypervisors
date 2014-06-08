@@ -25,7 +25,6 @@ public class VirtualMachineServiceTests {
     private static final String NAME2 = "NAME2";
     private static final String USER_NAME = "USER_NAME";
     private static final Long ID = 1L;
-    private static final Long ID2 = 2L;
     private static final String IP = "1.1.1.1";
     private static final int PORT = 1234;
 
