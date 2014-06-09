@@ -59,6 +59,9 @@ public class ServerService {
 
     private void addHypervisors(ServerNode serverNode) throws Exception {
         List<Hypervisor> hypervisors = createAgentConnector(serverNode).getHypervisors();
+        if (hypervisors == null) {
+            return;
+        }
         for (Hypervisor hypervisor: hypervisors) {
             hypervisorService.createHypervisor(hypervisor, serverNode);
         }
