@@ -5,6 +5,13 @@ import pl.edu.agh.student.hyperhypervisors.web.neo4j.domain.NamedNode;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * This abstract class represents information about infrastructure object send to be shown for users
+ *
+ * @param <Node>  type of class representing entity from database
+ * @param <Child> type of infrastructure objects representing children of this class
+ */
+
 public abstract class InfrastructureObjectData<Node extends NamedNode, Child> implements Serializable {
 
     private Long id;

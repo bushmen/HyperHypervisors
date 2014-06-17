@@ -16,6 +16,10 @@ import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.UserRepository
 import javax.validation.Valid;
 import java.security.Principal;
 
+/**
+ * This controller class is used for general purpose functionalities.
+ */
+
 @Controller
 public class MainController {
 
@@ -25,15 +29,33 @@ public class MainController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    /**
+     * @return name of main page view
+     */
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index() {
         return "index";
     }
 
+    /**
+     * @param passwordData represents information about new user's password
+     * @return name of view containing form for changing password
+     */
+
     @RequestMapping(value = "/changePassword", method = RequestMethod.GET)
     public String changePasswordView(@ModelAttribute(value = "passwordData") ChangePasswordData passwordData) {
         return "changePassword";
     }
+
+    /**
+     * This method is used to change user's password
+     *
+     * @param passwordData represents information about new user's password
+     * @param result       contains information about errors
+     * @param principal    instance of Principal class
+     * @return String indicating next view or navigation path
+     */
 
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
     public String changePassword(@Valid @ModelAttribute(value = "passwordData") ChangePasswordData passwordData,
@@ -52,6 +74,13 @@ public class MainController {
         userRepository.save(user);
         return "redirect:/";
     }
+
+    /**
+     * This method is called when user tries to access data which he is not allowed to.
+     *
+     * @param model instance of Spring MVC Model
+     * @return name of main page view
+     */
 
     @RequestMapping(value = "/access-denied")
     public String accessDenied(Model model) {

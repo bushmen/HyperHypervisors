@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This class is used to connect to any known JMX service and retrieve appropriate data.
+ */
+
 public class AgentConnector {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -42,7 +46,7 @@ public class AgentConnector {
                 List<Hypervisor> hypervisors = new ArrayList<>();
                 List<HypervisorModel> runningHypervisors = createMBeanProxy(mBeanServerConnection,
                         "server:type=ServerAgent", ServerAgentMXBean.class).getRunningHypervisors();
-                for(HypervisorModel model: runningHypervisors) {
+                for (HypervisorModel model : runningHypervisors) {
                     Hypervisor hypervisor = new Hypervisor();
                     hypervisor.setName(model.getName());
                     hypervisor.setPort(model.getPort());

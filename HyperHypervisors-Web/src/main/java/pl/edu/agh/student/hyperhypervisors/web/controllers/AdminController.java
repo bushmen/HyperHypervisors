@@ -15,6 +15,10 @@ import pl.edu.agh.student.hyperhypervisors.web.neo4j.repositories.UserRepository
 
 import javax.validation.Valid;
 
+/**
+ * This class provides functionalities specific for administrators.
+ */
+
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
@@ -25,11 +29,28 @@ public class AdminController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    /**
+     * Used to retrieve appropriate view and add possible values of user roles.
+     *
+     * @param user  represents added user
+     * @param model instance of Spring MVC Model
+     * @return String value indicating view
+     */
+
     @RequestMapping(value = "/users/create", method = RequestMethod.GET)
     public String create(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("userRoles", UserRole.values());
         return "admin/users/create";
     }
+
+    /**
+     * Creates user according to data specified in the form.
+     *
+     * @param user   represents added user
+     * @param result contains information about errors
+     * @param model  instance of Spring MVC Model
+     * @return String value indicating next view or path
+     */
 
     @RequestMapping(value = "/users/create", method = RequestMethod.POST)
     public String create(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
@@ -48,6 +69,4 @@ public class AdminController {
         userRepository.save(user);
         return "redirect:/";
     }
-
-
 }

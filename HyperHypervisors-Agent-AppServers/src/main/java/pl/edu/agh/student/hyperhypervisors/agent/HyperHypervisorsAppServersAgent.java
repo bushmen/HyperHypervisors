@@ -13,6 +13,10 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+/**
+ * This class is used as a javaagent to register underlying application server in virtual machine agent pointed by arguments
+ */
+
 public class HyperHypervisorsAppServersAgent {
 
     private static Logger logger = LoggerFactory.getLogger(HyperHypervisorsAppServersAgent.class);

@@ -3,6 +3,10 @@ package pl.edu.agh.student.hyperhypervisors.web.neo4j.domain;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.neo4j.annotation.GraphId;
 
+/**
+ * This abstract class represents every infrastructure node stored in database
+ */
+
 public abstract class NamedNode {
 
     @GraphId

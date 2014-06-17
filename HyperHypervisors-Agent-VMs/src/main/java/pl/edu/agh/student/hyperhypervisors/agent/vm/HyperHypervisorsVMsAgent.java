@@ -15,6 +15,10 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to start agent for virtual machines: registers appropriate MBeans and waits for connections.
+ */
+
 public class HyperHypervisorsVMsAgent {
 
     private static MBeanServer mBeanServer;
@@ -23,7 +27,7 @@ public class HyperHypervisorsVMsAgent {
     private static Logger logger = LoggerFactory.getLogger(HyperHypervisorsVMsAgent.class);
 
     public static void main(String[] args) throws Exception {
-        if(args.length < 2) {
+        if (args.length < 2) {
             System.out.println("IP address and port number not specified");
         }
 
